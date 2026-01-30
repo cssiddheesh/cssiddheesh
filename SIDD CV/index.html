@@ -225,40 +225,6 @@
     .reveal { opacity: 0; transform: translateY(50px); transition: 0.8s; }
     .reveal.active { opacity: 1; transform: translateY(0); }
 
-    /* ===== PAGE MODAL (page load) ===== */
-    .modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); z-index: 5000; opacity: 0; visibility: hidden; transition: opacity 220ms ease, visibility 220ms ease; }
-    .modal-overlay.show { opacity: 1; visibility: visible; }
-    .modal-content { position: relative; max-width: min(90vw,720px); width: 100%; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.75); box-shadow: 0 20px 60px rgba(0,0,0,0.6); transform: translateY(6px) scale(0.98); transition: transform 260ms cubic-bezier(.2,.9,.3,1), box-shadow 260ms ease; }
-    .modal-overlay.show .modal-content { transform: translateY(0) scale(1); }
-    .modal-content img { display: block; width: 100%; height: auto; border-radius: 8px; object-fit: contain; }
-    .modal-close { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 6px 8px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
-    .modal-close .close-timer { background: rgba(255,255,255,0.04); padding: 2px 6px; border-radius: 6px; font-size: 0.85rem; color: #fff; opacity: 0.95; display: none; }
-    /* show numeric timer only on hover (modal hover or button hover) */
-    .modal-overlay.show:hover .modal-close .close-timer,
-    .modal-close:hover .close-timer { display: inline-block; }
-
-    /* close wrap & integrated ring + X */
-    .close-wrap { position: relative; width: 28px; height: 28px; display: inline-block; }
-    .close-ring { display: inline-block; vertical-align: middle; margin-right: 0; width: 28px; height: 28px; transform: rotate(-90deg); }
-    .close-ring .ring-progress { transition: stroke-dashoffset 200ms linear; transform-origin: center center; }
-    .close-icon { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--primary); color: #000; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.95rem; line-height: 1; }
-
-    /* circular progress ring */
-    .close-ring { display: inline-block; vertical-align: middle; margin-right: 6px; }
-    .close-ring { transform: rotate(-90deg); }
-    .close-ring .ring-progress { transition: stroke-dashoffset 200ms linear; transform-origin: center center; }
-    .modal-close:hover .close-ring .ring-progress { filter: drop-shadow(0 4px 12px rgba(255,122,24,0.25)); }
-
-    @media (max-width: 480px) {
-      .modal-content { max-width: calc(100vw - 32px); padding: 10px; border-radius: 10px; }
-      .modal-close { top: 8px; right: 8px; padding: 6px 8px; }
-      .modal-overlay { background: rgba(0,0,0,0.55); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .modal-overlay, .modal-content { transition: none !important; animation: none !important; }
-    }
-
     footer { text-align: center; padding: 25px; color: var(--text-muted); }
 
     /* Footer animated glow + heartbeat */
@@ -301,23 +267,6 @@
 <body id="top">
 
 <div class="scroll-bar" id="scrollBar"></div>
-
-<!-- Page load popup -->
-<div class="modal-overlay" id="pageModal" role="dialog" aria-modal="true" aria-label="Under construction">
-  <div class="modal-content" role="document">
-    <button class="modal-close" id="modalClose" aria-label="Close popup">
-      <span class="close-wrap" aria-hidden="true">
-        <svg class="close-ring" width="28" height="28" viewBox="0 0 36 36" aria-hidden="true">
-          <circle class="ring-bg" cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3" />
-          <circle class="ring-progress" cx="18" cy="18" r="15" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round" stroke-dasharray="94.2477796077" stroke-dashoffset="0" />
-        </svg>
-        <span class="close-icon" aria-hidden="true">✕</span>
-      </span>
-      <span class="close-timer" id="closeTimer" aria-live="polite">3s</span>
-    </button> 
-    <img src="Assets/website under construction.webp" alt="Website under construction" id="modalImage" onerror="this.onerror=null;this.src='assets/website under construction.webp';">
-  </div>
-</div>
 
 <nav>
   <a href="#top" class="site-logo" aria-label="Go to top">CS Siddheesh</a>
@@ -430,94 +379,7 @@
     });
   }
 
-  // ===== Page modal: show on load, auto-close after 3s, close handlers + countdown + progress ring =====
-  (function(){
-    const modal = document.getElementById('pageModal');
-    const modalClose = document.getElementById('modalClose');
-    const modalImage = document.getElementById('modalImage');
-    const closeTimerEl = document.getElementById('closeTimer');
-    const ringProgress = modalClose ? modalClose.querySelector('.ring-progress') : null;
-    const AUTO_CLOSE_SECONDS = 3;
-    let remainingMs = AUTO_CLOSE_SECONDS * 1000;
-    let autoCloseTimer = null;
-    let countdownInterval = null;
-    let endTime = null;
 
-    // compute circumference based on circle r=15
-    const R = 15; const C = 2 * Math.PI * R;
-    if (ringProgress) {
-      ringProgress.style.strokeDasharray = String(C);
-      ringProgress.style.strokeDashoffset = String(0);
-    }
-
-    function setRingProgress(msLeft){
-      if (!ringProgress) return;
-      const progress = Math.max(0, Math.min(1, msLeft / (AUTO_CLOSE_SECONDS * 1000)));
-      const offset = C * (1 - progress);
-      ringProgress.style.strokeDashoffset = String(offset);
-    }
-
-    function updateTimerUI(msLeft){
-      if (!closeTimerEl) return;
-      if (typeof msLeft === 'undefined') msLeft = remainingMs;
-      const secs = Math.ceil(msLeft / 1000);
-      closeTimerEl.textContent = msLeft > 0 ? secs + 's' : 'Closing...';
-      setRingProgress(msLeft);
-    }
-
-    function clearTimers(){
-      if (autoCloseTimer) { clearTimeout(autoCloseTimer); autoCloseTimer = null; }
-      if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
-    }
-
-    function startCountdown(){
-      clearTimers();
-      const now = Date.now();
-      endTime = now + remainingMs;
-      autoCloseTimer = setTimeout(closeModal, remainingMs);
-      countdownInterval = setInterval(() => {
-        const msLeft = Math.max(0, endTime - Date.now());
-        remainingMs = msLeft;
-        updateTimerUI(msLeft);
-        if (msLeft <= 0) clearTimers();
-      }, 100);
-      updateTimerUI(remainingMs);
-    }
-
-    function openModal(){
-      if (!modal) return;
-      remainingMs = AUTO_CLOSE_SECONDS * 1000;
-      updateTimerUI(remainingMs);
-      modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
-      startCountdown();
-    }
-
-    function closeModal(){
-      if (!modal) return;
-      modal.classList.remove('show');
-      document.body.style.overflow = '';
-      clearTimers();
-      remainingMs = AUTO_CLOSE_SECONDS * 1000;
-      updateTimerUI(remainingMs);
-    }
-
-    if (modalClose) modalClose.addEventListener('click', closeModal);
-    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-    // Pause countdown when user hovers the modal (so they can inspect); resume on leave
-    if (modal) {
-      modal.addEventListener('mouseenter', () => { clearTimers(); });
-      modal.addEventListener('mouseleave', () => { if (modal.classList.contains('show') && remainingMs > 0) startCountdown(); });
-    }
-
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-    if (modalImage) modalImage.setAttribute('loading', 'eager');
-
-    // Show modal after load (tiny delay)
-    window.addEventListener('load', () => setTimeout(openModal, 120));
-
-  })();
 
 </script>
 
