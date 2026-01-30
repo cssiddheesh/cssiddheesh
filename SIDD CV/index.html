@@ -29,7 +29,112 @@
     }
 
     nav h2 { color: var(--primary); font-weight: 600; }
-    nav a { margin-left: 20px; color: #fff; font-size: 0.95rem; }
+    /* clickable site logo */
+    .site-logo {
+      font-weight: 700; font-size: 1.15rem; text-decoration: none; cursor: pointer; display: inline-block;
+      background: linear-gradient(90deg, var(--primary) 0%, #ffb86b 35%, #ffd27a 65%, var(--primary) 100%);
+      background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+      animation: logoGradient 3s linear infinite, logoBounce 1.9s cubic-bezier(.22,.9,.3,1) infinite;
+      transition: transform 180ms ease, text-shadow 180ms ease;
+      transform-origin: center center; text-shadow: 0 0 12px rgba(255,122,24,0.08);
+    }
+
+    /* hover/focus: slightly larger lift and stronger glow */
+    .site-logo:hover, .site-logo:focus { transform: translateY(-4px) scale(1.02); text-decoration: none; text-shadow: 0 8px 28px rgba(255,122,24,0.28); }
+
+    @keyframes logoGradient {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+
+    @keyframes logoBounce {
+      0% { transform: translateY(0) scale(1); text-shadow: 0 0 8px rgba(255,122,24,0.06); }
+      30% { transform: translateY(-6px) scale(1.06); text-shadow: 0 10px 40px rgba(255,122,24,0.35); }
+      60% { transform: translateY(-2px) scale(1.03); text-shadow: 0 6px 26px rgba(255,122,24,0.22); }
+      100% { transform: translateY(0) scale(1); text-shadow: 0 0 8px rgba(255,122,24,0.06); }
+    }
+
+    /* Respect prefers-reduced-motion: use static primary color and no bounce */
+    @media (prefers-reduced-motion: reduce) {
+      .site-logo { animation: none; background: none; -webkit-text-fill-color: initial; color: var(--primary); text-shadow: none; transform: none; }
+      .site-logo:hover, .site-logo:focus { transform: none; }
+    }
+
+    /* nav links wrapper */
+    .nav-links { display: flex; align-items: center; gap: 10px; }
+    /* Unified nav button appearance (desktop + mobile use same border size) */
+    .nav-links a {
+      margin-left: 20px; color: var(--primary); font-size: 0.95rem; text-decoration: none;
+      display: inline-block; padding: 14px 32px; border-radius: 30px; border: 1px solid var(--primary);
+      background: transparent; box-sizing: border-box;
+      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 260ms cubic-bezier(.2,.9,.3,1);
+    }
+
+    /* Hover & focus state: fill with primary and show white text, with lift */
+    .nav-links a:hover,
+    .nav-links a:focus {
+      background: var(--primary); color: #fff; text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.35); transform: translateX(0) translateY(-3px);
+    }
+
+    /* Visible focus ring for keyboard users */
+    .nav-links a:focus-visible {
+      outline: none; box-shadow: 0 0 0 6px rgba(255,122,24,0.12), 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    /* Buttons lift on hover too */
+    .btn:hover, .btn:focus, .btn.outline:hover, .btn.outline:focus, .contact-buttons a:hover, .contact-buttons a:focus {
+      transform: translateY(-3px);
+    }
+
+    /* hamburger toggle (hidden on desktop) */
+    .nav-toggle {
+      display: none; background: transparent; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 6px; line-height: 0;
+    }
+
+    /* Animated hamburger (3 bars) */
+    .nav-toggle .hamburger { display:inline-block; width:22px; height:16px; position:relative; }
+    .nav-toggle .hamburger::before,
+    .nav-toggle .hamburger::after,
+    .nav-toggle .hamburger span { content: ''; position:absolute; left:0; height:2px; right:0; background: #fff; border-radius:2px; transition: transform 220ms cubic-bezier(.2,.9,.3,1), top 220ms cubic-bezier(.2,.9,.3,1), opacity 180ms ease; }
+    .nav-toggle .hamburger::before { top:0; }
+    .nav-toggle .hamburger span { top:7px; }
+    .nav-toggle .hamburger::after { top:14px; }
+
+    /* Morph to X when open */
+    .nav-toggle.open .hamburger span { opacity: 0; transform: translateX(-8px); }
+    .nav-toggle.open .hamburger::before { top:7px; transform: rotate(45deg); }
+    .nav-toggle.open .hamburger::after { top:7px; transform: rotate(-45deg); }
+
+    /* Mobile behavior */
+    @media (max-width: 768px) {
+      nav { padding: 12px 5%; }
+      .nav-toggle { display: block; }
+
+      /* Right-aligned dropdown that slides in from the right */
+      .nav-links {
+        position: fixed; top: 64px; right: 5%; left: auto; display: none;
+        flex-direction: column; align-items: flex-end; background: rgba(0,0,0,0.95);
+        padding: 14px; gap: 10px; z-index: 999; max-width: 360px; min-width: 220px; border-radius: 10px;
+        transform: translateX(12px); opacity: 0; transition: transform 260ms cubic-bezier(.2,.9,.3,1), opacity 260ms ease;
+      }
+      .nav-links.open { display: flex; transform: translateX(0); opacity: 1; }
+
+      /* Links slide in from the right with staggered delays (unified sizing) */
+      .nav-links a { display: block; margin: 0; padding: 14px 32px; border-radius: 30px; border: 1px solid var(--primary); background: transparent; color: var(--primary); transform: translateX(14px) translateY(0); opacity: 0; transition: transform 260ms cubic-bezier(.2,.9,.3,1), opacity 260ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease; box-sizing: border-box; }
+      .nav-links.open a { transform: translateX(0) translateY(0); opacity: 1; }
+      .nav-links.open a:nth-child(1) { transition-delay: 0.04s; }
+      .nav-links.open a:nth-child(2) { transition-delay: 0.08s; }
+      .nav-links.open a:nth-child(3) { transition-delay: 0.12s; }
+      .nav-links.open a:nth-child(4) { transition-delay: 0.16s; }
+
+      /* Mobile hover & focus same as desktop — with lift */
+      .nav-links a:hover,
+      .nav-links a:focus { background: var(--primary); color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.35); transform: translateX(0) translateY(-3px); }
+      .nav-links a:focus-visible { outline: none; box-shadow: 0 0 0 6px rgba(255,122,24,0.12), 0 10px 30px rgba(0,0,0,0.35); }
+
+      /* ensure hero spacing doesn't get hidden behind the fixed nav */
+      section { padding-top: 110px; }
+    }
 
     .scroll-bar {
       position: fixed; top: 0; left: 0; height: 4px;
@@ -44,12 +149,37 @@
     .typing span { color: var(--primary); border-right: 2px solid; padding-right: 4px; }
     .hero p { margin: 20px 0; max-width: 600px; color: var(--text-muted); }
 
+    /* Primary buttons (filled) */
     .btn {
       display: inline-block; padding: 14px 32px; border-radius: 30px;
       background: var(--primary); color: #fff; margin-right: 15px; font-size: 1rem;
+      border: 1px solid var(--primary); box-sizing: border-box;
+      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 120ms ease;
     }
 
+    /* Outline variant starts transparent but uses same sizing */
     .btn.outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+
+    /* Ensure nav and contact buttons follow the same visual behaviour */
+    .nav-links a, .contact-buttons a { transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 120ms ease; }
+
+    /* Hover / Focus: invert to filled primary with white text */
+    .btn:hover, .btn:focus,
+    .btn.outline:hover, .btn.outline:focus,
+    .nav-links a:hover, .nav-links a:focus,
+    .contact-buttons a:hover, .contact-buttons a:focus {
+      background: var(--primary); color: #fff; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+
+    /* Active / pressed state (subtle inset) */
+    .btn:active, .btn.outline:active, .nav-links a:active, .contact-buttons a:active {
+      transform: translateY(1px); box-shadow: inset 0 3px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Focus visible for keyboard accessibility */
+    .btn:focus-visible, .btn.outline:focus-visible, .nav-links a:focus-visible, .contact-buttons a:focus-visible {
+      outline: none; box-shadow: 0 0 0 6px rgba(255,122,24,0.12), 0 6px 18px rgba(0,0,0,0.35);
+    }
 
     /* ===== GLASS CARDS ===== */
     .glass {
@@ -95,7 +225,72 @@
     .reveal { opacity: 0; transform: translateY(50px); transition: 0.8s; }
     .reveal.active { opacity: 1; transform: translateY(0); }
 
+    /* ===== PAGE MODAL (page load) ===== */
+    .modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); z-index: 5000; opacity: 0; visibility: hidden; transition: opacity 220ms ease, visibility 220ms ease; }
+    .modal-overlay.show { opacity: 1; visibility: visible; }
+    .modal-content { position: relative; max-width: min(90vw,720px); width: 100%; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.75); box-shadow: 0 20px 60px rgba(0,0,0,0.6); transform: translateY(6px) scale(0.98); transition: transform 260ms cubic-bezier(.2,.9,.3,1), box-shadow 260ms ease; }
+    .modal-overlay.show .modal-content { transform: translateY(0) scale(1); }
+    .modal-content img { display: block; width: 100%; height: auto; border-radius: 8px; object-fit: contain; }
+    .modal-close { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 6px 8px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+    .modal-close .close-timer { background: rgba(255,255,255,0.04); padding: 2px 6px; border-radius: 6px; font-size: 0.85rem; color: #fff; opacity: 0.95; display: none; }
+    /* show numeric timer only on hover (modal hover or button hover) */
+    .modal-overlay.show:hover .modal-close .close-timer,
+    .modal-close:hover .close-timer { display: inline-block; }
+
+    /* close wrap & integrated ring + X */
+    .close-wrap { position: relative; width: 28px; height: 28px; display: inline-block; }
+    .close-ring { display: inline-block; vertical-align: middle; margin-right: 0; width: 28px; height: 28px; transform: rotate(-90deg); }
+    .close-ring .ring-progress { transition: stroke-dashoffset 200ms linear; transform-origin: center center; }
+    .close-icon { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--primary); color: #000; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.95rem; line-height: 1; }
+
+    /* circular progress ring */
+    .close-ring { display: inline-block; vertical-align: middle; margin-right: 6px; }
+    .close-ring { transform: rotate(-90deg); }
+    .close-ring .ring-progress { transition: stroke-dashoffset 200ms linear; transform-origin: center center; }
+    .modal-close:hover .close-ring .ring-progress { filter: drop-shadow(0 4px 12px rgba(255,122,24,0.25)); }
+
+    @media (max-width: 480px) {
+      .modal-content { max-width: calc(100vw - 32px); padding: 10px; border-radius: 10px; }
+      .modal-close { top: 8px; right: 8px; padding: 6px 8px; }
+      .modal-overlay { background: rgba(0,0,0,0.55); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .modal-overlay, .modal-content { transition: none !important; animation: none !important; }
+    }
+
     footer { text-align: center; padding: 25px; color: var(--text-muted); }
+
+    /* Footer animated glow + heartbeat */
+    .footer-note {
+      display: inline-block; color: #fff; font-weight: 500; letter-spacing: 0.2px;
+      transition: text-shadow 200ms ease, transform 200ms ease;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    .footer-note .heart {
+      display: inline-block; margin: 0 6px; transform-origin: center center;
+      animation: heartbeat 1.6s ease-in-out infinite; font-size: 1em;
+      text-shadow: 0 0 10px rgba(255,122,24,0.75);
+    }
+
+    @keyframes pulseGlow {
+      0% { text-shadow: 0 0 0 rgba(255,122,24,0); transform: translateY(0); }
+      50% { text-shadow: 0 0 18px rgba(255,122,24,0.95), 0 0 40px rgba(255,122,24,0.35); transform: translateY(-3px); }
+      100% { text-shadow: 0 0 0 rgba(255,122,24,0); transform: translateY(0); }
+    }
+
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.18); }
+      40% { transform: scale(1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Respect user preference for reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .footer-note, .footer-note .heart { animation: none; }
+    }
 
     @media (max-width: 768px) {
       .hero h1 { font-size: 2.2rem; }
@@ -103,13 +298,33 @@
     }
   </style>
 </head>
-<body>
+<body id="top">
 
 <div class="scroll-bar" id="scrollBar"></div>
 
+<!-- Page load popup -->
+<div class="modal-overlay" id="pageModal" role="dialog" aria-modal="true" aria-label="Under construction">
+  <div class="modal-content" role="document">
+    <button class="modal-close" id="modalClose" aria-label="Close popup">
+      <span class="close-wrap" aria-hidden="true">
+        <svg class="close-ring" width="28" height="28" viewBox="0 0 36 36" aria-hidden="true">
+          <circle class="ring-bg" cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3" />
+          <circle class="ring-progress" cx="18" cy="18" r="15" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round" stroke-dasharray="94.2477796077" stroke-dashoffset="0" />
+        </svg>
+        <span class="close-icon" aria-hidden="true">✕</span>
+      </span>
+      <span class="close-timer" id="closeTimer" aria-live="polite">3s</span>
+    </button> 
+    <img src="Assets/website under construction.webp" alt="Website under construction" id="modalImage" onerror="this.onerror=null;this.src='assets/website under construction.webp';">
+  </div>
+</div>
+
 <nav>
-  <h2>CS Siddheesh</h2>
-  <div>
+  <a href="#top" class="site-logo" aria-label="Go to top">CS Siddheesh</a>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="hamburger" aria-hidden="true"><span></span></span>
+  </button>
+  <div class="nav-links" id="navLinks" aria-hidden="true">
     <a href="#about" class="btn outline">About</a>
     <a href="#skills" class="btn outline">Skills</a>
     <a href="#projects" class="btn outline">Projects</a>
@@ -160,7 +375,7 @@
   </div>
 </section>
 
-<footer>Made with 💖 by CS Siddheesh © <span id="year"></span></footer>
+<footer><span class="footer-note">Made with <span class="heart" aria-hidden="true">💖</span> by CS Siddheesh © <span id="year"></span></span></footer>
 
 <a class="whatsapp" href="https://wa.me/91XXXXXXXXXX" target="_blank">💬</a>
 
@@ -182,6 +397,128 @@
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     document.getElementById('scrollBar').style.width = (scroll/height)*100 + '%';
   });
+
+  // ===== Responsive nav toggle =====
+  const navToggle = document.querySelector('.nav-toggle');
+  const navLinks = document.getElementById('navLinks');
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      navLinks.setAttribute('aria-hidden', String(!isOpen));
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+      navToggle.classList.toggle('open', isOpen);
+    });
+
+    // Close mobile menu when a link is clicked
+    document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => {
+      if (navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open');
+        navLinks.setAttribute('aria-hidden', 'true');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.classList.remove('open');
+      }
+    }));
+
+    // Ensure menu closes when resizing to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open');
+        navLinks.setAttribute('aria-hidden', 'true');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.classList.remove('open');
+      }
+    });
+  }
+
+  // ===== Page modal: show on load, auto-close after 3s, close handlers + countdown + progress ring =====
+  (function(){
+    const modal = document.getElementById('pageModal');
+    const modalClose = document.getElementById('modalClose');
+    const modalImage = document.getElementById('modalImage');
+    const closeTimerEl = document.getElementById('closeTimer');
+    const ringProgress = modalClose ? modalClose.querySelector('.ring-progress') : null;
+    const AUTO_CLOSE_SECONDS = 3;
+    let remainingMs = AUTO_CLOSE_SECONDS * 1000;
+    let autoCloseTimer = null;
+    let countdownInterval = null;
+    let endTime = null;
+
+    // compute circumference based on circle r=15
+    const R = 15; const C = 2 * Math.PI * R;
+    if (ringProgress) {
+      ringProgress.style.strokeDasharray = String(C);
+      ringProgress.style.strokeDashoffset = String(0);
+    }
+
+    function setRingProgress(msLeft){
+      if (!ringProgress) return;
+      const progress = Math.max(0, Math.min(1, msLeft / (AUTO_CLOSE_SECONDS * 1000)));
+      const offset = C * (1 - progress);
+      ringProgress.style.strokeDashoffset = String(offset);
+    }
+
+    function updateTimerUI(msLeft){
+      if (!closeTimerEl) return;
+      if (typeof msLeft === 'undefined') msLeft = remainingMs;
+      const secs = Math.ceil(msLeft / 1000);
+      closeTimerEl.textContent = msLeft > 0 ? secs + 's' : 'Closing...';
+      setRingProgress(msLeft);
+    }
+
+    function clearTimers(){
+      if (autoCloseTimer) { clearTimeout(autoCloseTimer); autoCloseTimer = null; }
+      if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+    }
+
+    function startCountdown(){
+      clearTimers();
+      const now = Date.now();
+      endTime = now + remainingMs;
+      autoCloseTimer = setTimeout(closeModal, remainingMs);
+      countdownInterval = setInterval(() => {
+        const msLeft = Math.max(0, endTime - Date.now());
+        remainingMs = msLeft;
+        updateTimerUI(msLeft);
+        if (msLeft <= 0) clearTimers();
+      }, 100);
+      updateTimerUI(remainingMs);
+    }
+
+    function openModal(){
+      if (!modal) return;
+      remainingMs = AUTO_CLOSE_SECONDS * 1000;
+      updateTimerUI(remainingMs);
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      startCountdown();
+    }
+
+    function closeModal(){
+      if (!modal) return;
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+      clearTimers();
+      remainingMs = AUTO_CLOSE_SECONDS * 1000;
+      updateTimerUI(remainingMs);
+    }
+
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    // Pause countdown when user hovers the modal (so they can inspect); resume on leave
+    if (modal) {
+      modal.addEventListener('mouseenter', () => { clearTimers(); });
+      modal.addEventListener('mouseleave', () => { if (modal.classList.contains('show') && remainingMs > 0) startCountdown(); });
+    }
+
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    if (modalImage) modalImage.setAttribute('loading', 'eager');
+
+    // Show modal after load (tiny delay)
+    window.addEventListener('load', () => setTimeout(openModal, 120));
+
+  })();
+
 </script>
 
 </body>
