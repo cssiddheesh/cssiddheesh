@@ -359,11 +359,50 @@
       70% { transform: scale(0.9); }
       100% { transform: scale(1); opacity: 1; }
     }
+
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Mobile optimization */
+    @media (max-width: 768px) {
+      .back-to-top {
+        right: 20px;
+        left: auto;
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+      }
+    }
   </style>
 </head>
 <body id="top">
 
 <div class="scroll-bar" id="scrollBar"></div>
+
+<a href="#top" id="backToTop" class="back-to-top">↑</a>
 
 <nav>
   <a href="#top" class="site-logo" aria-label="Go to top">CS Siddheesh</a>
@@ -477,14 +516,22 @@
   function type() { if(i < text.length){ document.getElementById('type').innerHTML += text.charAt(i); i++; setTimeout(type, 80);} }
   type();
 
-  // Scroll reveal & progress bars & scroll indicator
+  // Scroll reveal & progress bars & scroll indicator & back to top
   const reveals = document.querySelectorAll('.reveal');
+  const backToTop = document.getElementById('backToTop');
   window.addEventListener('scroll', () => {
     reveals.forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active'); });
     document.querySelectorAll('.progress div').forEach(bar => { if(bar.getBoundingClientRect().top < window.innerHeight - 50) bar.style.width = bar.dataset.width; });
     const scroll = document.documentElement.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     document.getElementById('scrollBar').style.width = (scroll/height)*100 + '%';
+    if (backToTop) {
+      if (scroll > 300) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+    }
   });
 
   // ===== Responsive nav toggle =====
