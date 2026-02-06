@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>404 – Page Not Found | CSSiddheesh</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --orange: #ff7a18;
+      --orange-soft: #ff9a3c;
+      --text: #eaeaea;
+      --muted: #9a9a9a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 🌟 FLOATING ORANGE BUBBLES */
+    .bubble {
+      position: absolute;
+      bottom: -120px;
+      background: radial-gradient(circle, var(--orange-soft), var(--orange));
+      border-radius: 50%;
+      opacity: 0.12;
+      animation: floatUp linear infinite;
+      z-index: 0;
+    }
+
+    .bubble:nth-child(1) { width: 40px; height: 40px; left: 10%; animation-duration: 14s; }
+    .bubble:nth-child(2) { width: 70px; height: 70px; left: 25%; animation-duration: 18s; }
+    .bubble:nth-child(3) { width: 30px; height: 30px; left: 45%; animation-duration: 12s; }
+    .bubble:nth-child(4) { width: 90px; height: 90px; left: 65%; animation-duration: 20s; }
+    .bubble:nth-child(5) { width: 50px; height: 50px; left: 85%; animation-duration: 16s; }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(-120vh);
+      }
+    }
+
+    .wrapper {
+      max-width: 620px;
+      padding: 24px;
+      animation: fadeIn 1.1s ease forwards;
+      position: relative;
+      z-index: 1;
+    }
+
+    .error-code {
+      font-size: 7.5rem;
+      font-weight: 800;
+      color: var(--orange);
+      text-shadow: 0 0 28px rgba(255, 122, 24, 0.45);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      margin-top: 10px;
+    }
+
+    .tagline {
+      margin: 12px 0 22px;
+      font-size: 1.05rem;
+      color: var(--orange-soft);
+      font-weight: 500;
+    }
+
+    p {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    .countdown {
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+      color: var(--orange-soft);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--orange), var(--orange-soft));
+      color: #000;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 12px 35px rgba(255, 122, 24, 0.35);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 16px;
+      font-size: 0.8rem;
+      color: #666;
+      z-index: 1;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🌟 BACKGROUND BUBBLES -->
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+
+  <div class="wrapper">
+    <div class="error-code">404</div>
+
+    <h1>Page Not Found</h1>
+
+    <div class="tagline">
+      Looks like you took a wrong turn on the internet.
+    </div>
+
+    <p>
+      The page you’re looking for doesn’t exist, was moved,
+      or the URL was typed incorrectly.
+    </p>
+
+    <div class="countdown">
+      Redirecting to <strong>cssiddheesh.in</strong> in
+      <span id="timer">10</span> seconds…
+    </div>
+
+    <a href="https://www.cssiddheesh.in" class="btn">
+      Go to Home
+    </a>
+  </div>
+
+  <footer>
+    © cssiddheesh.in
+  </footer>
+
+  <script>
+    let seconds = 10;
+    const timer = document.getElementById("timer");
+
+    const countdown = setInterval(() => {
+      seconds--;
+      timer.textContent = seconds;
+
+      if (seconds <= 0) {
+        clearInterval(countdown);
+        window.location.href = "https://www.cssiddheesh.in";
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>

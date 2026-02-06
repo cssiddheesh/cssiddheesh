@@ -1,0 +1,5 @@
+- [x] Change nav background to solid color
+- [x] Remove logo gradient and animations, make solid text
+- [x] Simplify nav links: remove borders, reduce padding, add subtle hover effects
+- [x] Streamline mobile menu: remove slide animations, simplify styling
+- [x] Remove excessive transforms and animations on nav elements

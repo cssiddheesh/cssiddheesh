@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta property="og:title" content="CS Siddheesh – Freelance Web Developer">
   <meta property="og:description" content="Freelance web developer creating modern, fast, and responsive websites. Explore my portfolio and projects.">
-  <meta property="og:image" content="https://cssiddheesh.in/Assets/portfolio_preview.png">
+  <meta property="og:image" content="https://wwwcssiddheesh.in/Assets/portfolio_preview.webp">
   <meta property="og:url" content="https://cssiddheesh.in">
   <meta property="og:type" content="website">
   <title>CS Siddheesh | Freelance Web Developer | Student</title>
@@ -31,8 +31,7 @@
     nav {
       position: fixed; top: 0; left: 0; width: 100%;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 15px 10%; backdrop-filter: blur(12px);
-      background: rgba(0,0,0,0.6); z-index: 1000;
+      padding: 15px 10%; background: #000; z-index: 1000;
     }
 
     nav h2 { color: var(--primary); font-weight: 600; }
@@ -41,7 +40,6 @@
       font-weight: 700; font-size: 1.15rem; text-decoration: none; cursor: pointer; display: inline-block;
       background: linear-gradient(90deg, var(--primary) 0%, #ffb86b 35%, #ffd27a 65%, var(--primary) 100%);
       background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
-      animation: logoGradient 3s linear infinite, logoBounce 1.9s cubic-bezier(.22,.9,.3,1) infinite;
       transition: transform 180ms ease, text-shadow 180ms ease;
       transform-origin: center center; text-shadow: 0 0 12px rgba(255,122,24,0.08);
     }
@@ -49,49 +47,34 @@
     /* hover/focus: slightly larger lift and stronger glow */
     .site-logo:hover, .site-logo:focus { transform: translateY(-4px) scale(1.02); text-decoration: none; text-shadow: 0 8px 28px rgba(255,122,24,0.28); }
 
-    @keyframes logoGradient {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 220% 50%; }
-    }
 
-    @keyframes logoBounce {
-      0% { transform: translateY(0) scale(1); text-shadow: 0 0 8px rgba(255,122,24,0.06); }
-      30% { transform: translateY(-6px) scale(1.06); text-shadow: 0 10px 40px rgba(255,122,24,0.35); }
-      60% { transform: translateY(-2px) scale(1.03); text-shadow: 0 6px 26px rgba(255,122,24,0.22); }
-      100% { transform: translateY(0) scale(1); text-shadow: 0 0 8px rgba(255,122,24,0.06); }
-    }
 
     /* Respect prefers-reduced-motion: use static primary color and no bounce */
     @media (prefers-reduced-motion: reduce) {
-      .site-logo { animation: none; background: none; -webkit-text-fill-color: initial; color: var(--primary); text-shadow: none; transform: none; }
+      .site-logo { background: none; -webkit-text-fill-color: initial; color: var(--primary); text-shadow: none; transform: none; }
       .site-logo:hover, .site-logo:focus { transform: none; }
     }
 
     /* nav links wrapper */
-    .nav-links { display: flex; align-items: center; gap: 10px; }
-    /* Unified nav button appearance (desktop + mobile use same border size) */
+    .nav-links { display: flex; align-items: center; gap: 20px; }
     .nav-links a {
-      margin-left: 20px; color: var(--primary); font-size: 0.95rem; text-decoration: none;
-      display: inline-block; padding: 14px 32px; border-radius: 30px; border: 1px solid var(--primary);
-      background: transparent; box-sizing: border-box;
-      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 260ms cubic-bezier(.2,.9,.3,1);
+      color: #fff; font-size: 0.95rem; text-decoration: none;
+      padding: 8px 16px; transition: color 180ms ease;
     }
 
-    /* Hover & focus state: fill with primary and show white text, with lift */
+    /* Hover & focus state: subtle color change */
     .nav-links a:hover,
     .nav-links a:focus {
-      background: var(--primary); color: #fff; text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,0.35); transform: translateX(0) translateY(-3px);
+      color: var(--primary); text-decoration: underline;
     }
 
     /* Visible focus ring for keyboard users */
     .nav-links a:focus-visible {
-      outline: none; box-shadow: 0 0 0 6px rgba(255,122,24,0.12), 0 10px 30px rgba(0,0,0,0.35);
+      outline: 2px solid var(--primary); outline-offset: 2px;
     }
 
     /* Buttons lift on hover too */
-    .btn:hover, .btn:focus, .btn.outline:hover, .btn.outline:focus, .contact-buttons a:hover, .contact-buttons a:focus {
-      transform: translateY(-3px);
-    }
+    /* Removed excessive transforms */
 
     /* hamburger toggle (hidden on desktop) */
     .nav-toggle {
@@ -117,27 +100,18 @@
       nav { padding: 12px 5%; }
       .nav-toggle { display: block; }
 
-      /* Right-aligned dropdown that slides in from the right */
+      /* Simple dropdown menu */
       .nav-links {
         position: fixed; top: 64px; right: 5%; left: auto; display: none;
-        flex-direction: column; align-items: flex-end; background: rgba(0,0,0,0.95);
+        flex-direction: column; align-items: flex-end; background: #000;
         padding: 14px; gap: 10px; z-index: 999; max-width: 360px; min-width: 220px; border-radius: 10px;
-        transform: translateX(12px); opacity: 0; transition: transform 260ms cubic-bezier(.2,.9,.3,1), opacity 260ms ease;
       }
-      .nav-links.open { display: flex; transform: translateX(0); opacity: 1; }
+      .nav-links.open { display: flex; }
 
-      /* Links slide in from the right with staggered delays (unified sizing) */
-      .nav-links a { display: block; margin: 0; padding: 14px 32px; border-radius: 30px; border: 1px solid var(--primary); background: transparent; color: var(--primary); transform: translateX(14px) translateY(0); opacity: 0; transition: transform 260ms cubic-bezier(.2,.9,.3,1), opacity 260ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease; box-sizing: border-box; }
-      .nav-links.open a { transform: translateX(0) translateY(0); opacity: 1; }
-      .nav-links.open a:nth-child(1) { transition-delay: 0.04s; }
-      .nav-links.open a:nth-child(2) { transition-delay: 0.08s; }
-      .nav-links.open a:nth-child(3) { transition-delay: 0.12s; }
-      .nav-links.open a:nth-child(4) { transition-delay: 0.16s; }
-
-      /* Mobile hover & focus same as desktop — with lift */
-      .nav-links a:hover,
-      .nav-links a:focus { background: var(--primary); color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.35); transform: translateX(0) translateY(-3px); }
-      .nav-links a:focus-visible { outline: none; box-shadow: 0 0 0 6px rgba(255,122,24,0.12), 0 10px 30px rgba(0,0,0,0.35); }
+      /* Simple links without animations */
+      .nav-links a { display: block; margin: 0; padding: 8px 16px; color: #fff; text-decoration: none; }
+      .nav-links a:hover, .nav-links a:focus { color: var(--primary); text-decoration: underline; }
+      .nav-links a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
       /* ensure hero spacing doesn't get hidden behind the fixed nav */
       section { padding-top: 110px; }
@@ -196,6 +170,8 @@
 
     /* ===== ABOUT ===== */
     .about p { max-width: 800px; color: var(--text-muted); }
+    .email-link { color: var(--primary); text-decoration: none; }
+    .email-link:hover { text-decoration: underline; }
 
     /* ===== SKILLS ===== */
     .skills .bar { margin-bottom: 18px; }
@@ -206,13 +182,23 @@
     .progress div { height: 100%; width: 0; background: var(--primary); transition: width 1.5s ease-out; border-radius: 0 20px 20px 0; }
 
     /* ===== GRID ===== */
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 25px; margin-top: 40px; justify-content: center; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 25px; margin-top: 40px; justify-content: center; }
+
+    /* ===== SERVICE BOXES ===== */
+    .service { padding: 20px; }
 
     /* ===== PROJECT IMAGE ===== */
     .project img { width: 100%; border-radius: 12px; margin-bottom: 12px; }
 
     /* ===== CONTACT ===== */
-    .contact-buttons a { margin-right: 15px; padding: 14px 32px; font-size: 1rem; }
+    .contact-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      justify-items: center;
+    }
+    .contact-buttons a { margin-right: 0; padding: 14px 32px; font-size: 1rem; }
+    .contact-buttons img { width: 40px; height: 40px; object-fit: contain; }
 
 
 
@@ -402,9 +388,13 @@
         font-size: 1.3rem;
       }
     }
+
+
   </style>
 </head>
 <body id="top">
+
+
 
 <div class="scroll-bar" id="scrollBar"></div>
 
@@ -418,25 +408,62 @@
   <div class="nav-links" id="navLinks" aria-hidden="true">
     <a href="#about" class="btn outline">About</a>
     <a href="#skills" class="btn outline">Skills</a>
+    <a href="#services" class="btn outline">Services</a>
     <a href="#projects" class="btn outline">Projects</a>
+    <a href="#social" class="btn outline">Social</a>
     <a href="#contact" class="btn outline">Contact</a>
   </div>
 </nav>
 
 <section class="hero">
   <h1 class="typing">I Build <span id="type"></span></h1>
-  <p>Freelance web developer creating modern websites using HTML, CSS & AI tools.</p>
+  <p>I help freelancers and small businesses get more inquiries with fast, professional websites.</p>
   <a href="#contact" class="btn outline">Hire Me</a><br>
   <a href="#projects" class="btn outline">View Work</a>
 </section>
 
 <section id="about" class="about reveal">
-  <h2>About Me</h2>
-  <p>Hi, I’m CS Siddheesh — a Class 11 PCM student and freelance web developer. I build clean, responsive websites using modern design and AI tools.</p>
+  <h2>About Me</h2> <br>
+ <p>
+    Hi, I’m <strong>CS Siddheesh</strong> — a freelance web developer who builds
+    fast, professional websites for freelancers and small businesses.
+  </p>
+  <br>
+  <p>
+    I focus on creating websites that don’t just look good, but actually help
+    you get more inquiries. That means clean design, clear structure, and
+    performance-focused code — without unnecessary features or bloated scripts.
+  </p>
+  <br>
+  <p>
+    I work with modern web standards to build responsive, SEO-ready websites
+    that load quickly and are easy to maintain. Whether you need a personal
+    portfolio, a business website, or a landing page, my goal is simple:
+    make your online presence clear, credible, and effective.
+  </p>
+   <br>
+  <p>I believe a good website should be:</p>
+
+  <ul>
+    <li>Easy for visitors to understand</li>
+    <li>Fast on all devices</li>
+    <li>Built with long-term growth in mind</li>
+  </ul>
+   <br>
+  <p>
+    If you’re looking for a developer who values clarity, performance, and
+    practical results — I’d be happy to work with you.
+  </p>
+
+  <p>
+    📩 <strong>Email:</strong>
+    <a href="mailto:contact@cssiddheesh.in" >contact@cssiddheesh.in</a>
+  </p>
+
 </section>
 
 <section id="skills" class="skills reveal">
-  <h2>Skills</h2>
+  <h2>Skills</h2> <br>
   <div class="bar"><span>HTML</span><div class="progress"><div data-width="90%"></div></div></div>
   <div class="bar"><span>CSS</span><div class="progress"><div data-width="85%"></div></div></div>
   <div class="bar"><span>Python</span><div class="progress"><div data-width="60%"></div></div></div>
@@ -444,30 +471,120 @@
   <div class="bar"><span>AI</span><div class="progress"><div data-width="95%"></div></div></div>
 </section>
 
+<section id="services" class="reveal">
+  <h2>Services</h2>
+  <div class="grid">
+    <div class="glass service">
+      <h3>Website Creation</h3>
+      <p>Build modern, responsive websites using HTML, CSS, and AI tools.</p>
+      <p class="price">Starting at $500</p>
+      <a href="#contact" class="btn">Get a Quote</a>
+      <a href="#contact" class="btn outline">View Details</a>
+    </div>
+    <div class="glass service">
+      <h3>Website Publishing</h3>
+      <p>Deploy your website to the internet with hosting and domain setup.</p>
+      <p class="price">Starting at $200</p>
+      <a href="#contact" class="btn">Get a Quote</a>
+      <a href="#contact" class="btn outline">View Details</a>
+    </div>
+    <div class="glass service">
+      <h3>SEO Optimization</h3>
+      <p>Improve your website's visibility with search engine optimization.</p>
+      <p class="price">Starting at $300</p>
+      <a href="#contact" class="btn">Get a Quote</a>
+      <a href="#contact" class="btn outline">View Details</a>
+    </div>
+  </div>
+  <button id="showMoreServicesBtn" class="btn outline" style="margin-top: 20px;">Show More Services ▼</button>
+  <div id="additionalServices" style="display: none;">
+    <div class="grid">
+      <div class="glass service">
+        <h3>Custom Email</h3>
+        <p>Set up custom email addresses for your domain.</p>
+        <p class="price">Starting at $100</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+      <div class="glass service">
+        <h3>Custom Shortlinks</h3>
+        <p>Create branded shortlinks for easy sharing.</p>
+        <p class="price">Starting at $150</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+      <div class="glass service">
+        <h3>Social Media Setup</h3>
+        <p>Configure and optimize your social media profiles.</p>
+        <p class="price">Starting at $250</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+      <div class="glass service">
+        <h3>Monthly Maintenance</h3>
+        <p>Ongoing website maintenance and updates every month.</p>
+        <p class="price">Starting at $150/month</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+      <div class="glass service">
+        <h3>Quarterly Maintenance</h3>
+        <p>Quarterly website check-ups and optimizations.</p>
+        <p class="price">Starting at $400/quarter</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="projects" class="reveal">
   <h2>Projects</h2>
   <div class="grid">
     <div class="glass project">
-      <img src="Assets/bussiness_preview.png" alt="Business Website">
+      <img src="Assets/bussiness_preview.webp" alt="Business Website">
       <h3>Business Website</h3>
-      <a href="https://prajilanguagecenter.netlify.app/" target="_blank" class="btn">Preview Project</a>
+      <a href="Sample Projects/Business projects/Examples_1/index.html" target="_blank" class="btn">Preview Project</a>
     </div>
     <div class="glass project">
-      <img src="Assets/portfolio_preview.png" alt="Portfolio Project">
+      <img src="Assets/portfolio_preview.webp" alt="Portfolio Project">
       <h3>Portfolio Website</h3>
-      <a href="https://cssiddheesh.netlify.app/" target="_blank" class="btn">Preview Project</a>
+      <a href="https://www.cssiddheesh.in" target="_blank" class="btn">Preview Project</a>
     </div>
+  </div>
+</section>
+
+<section id="social" class="reveal">
+  <h2>Follow Me</h2>
+  <br>
+  <div class="contact-buttons">
+    <a class="btn outline" href="https://instagram.com/cssiddheesh" target="_blank" aria-label="Follow on Instagram"><img src="Assets/Social_Media_Icons/instagram.svg" alt="Instagram" loading="lazy"></a>
+    <a class="btn outline" href="https://github.com/cssiddheesh" target="_blank" aria-label="Follow on GitHub"><img src="Assets/Social_Media_Icons/001-github.svg" alt="GitHub" loading="lazy"></a>
+    <a class="btn outline" href="https://linkedin.com/in/cssiddheesh" target="_blank" aria-label="Connect on LinkedIn"><img src="Assets/Social_Media_Icons/007-linkedin.svg" alt="LinkedIn" loading="lazy"></a>
+    <a class="btn outline" href="https://facebook.com/cssiddheesh" target="_blank" aria-label="Follow on Facebook"><img src="Assets/Social_Media_Icons/004-facebook.svg" alt="Facebook" loading="lazy"></a>
+    <a class="btn outline" href="https://x.com/cssiddheesh" target="_blank" aria-label="Follow on X"><img src="Assets/Social_Media_Icons/008-twitter.svg" alt="X" loading="lazy"></a>
+    <a class="btn outline" href="https://pinterest.com/cssiddheesh" target="_blank" aria-label="Follow on Pinterest"><img src="Assets/Social_Media_Icons/pintrest.svg" alt="Pinterest" loading="lazy"></a>
+    <a class="btn outline" href="https://threads.net/@cssiddheesh" target="_blank" aria-label="Follow on Threads"><img src="Assets/Social_Media_Icons/005-gmail.svg" alt="Threads" loading="lazy"></a>
+    <a class="btn outline" href="https://linktr.ee/cssiddheesh" target="_blank" aria-label="Visit Linktree"><img src="Assets/Social_Media_Icons/linktree.png" alt="Linktree" loading="lazy"></a>
+    <a class="btn outline" href="https://youtube.com/@cssiddheesh" target="_blank" aria-label="Subscribe on YouTube"><img src="Assets/Social_Media_Icons/009-youtube.svg" alt="YouTube" loading="lazy"></a>
   </div>
 </section>
 
 <section id="contact" class="reveal">
   <h2>Contact Me</h2>
+  <p>Let’s build something great together.</p>
+  <br>
   <div class="contact-buttons">
-    <a class="btn" href="mailto:cssiddheesh@gmail.com">Email</a>
-    <a class="btn outline" href="https://instagram.com/cssiddheesh" target="_blank">Instagram</a>
+    <a class="email-link" href="mailto:contact@cssiddheesh.in">contact@cssiddheesh.in</a>
+    <a class="btn outline" href="https://ig.me/m/cssiddheesh" target="_blank">Instagram (DM) </a>
   </div>
-  <h3>Location</h3>
-  <div class="embed-map-responsive"><div class="embed-map-container"><iframe class="embed-map-frame" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=600&height=400&hl=en&q=Singapermal&t=&z=13&ie=UTF8&iwloc=B&output=embed"></iframe><a href="https://sprunkiretake.net" style="font-size:2px!important;color:gray!important;position:absolute;bottom:0;left:0;z-index:1;max-height:1px;overflow:hidden">Sprunki</a></div><style>.embed-map-responsive{position:relative;text-align:right;width:100%;height:0;padding-bottom:66.66666666666666%;}.embed-map-container{overflow:hidden;background:none!important;width:100%;height:100%;position:absolute;top:0;left:0;}.embed-map-frame{width:100%!important;height:100%!important;position:absolute;top:0;left:0;}</style></div>
+
+</section>
+
+
+<section id="fill-this" class="reveal">
+  <h2>Fill This</h2>
+  <p>Please fill out the form below to get in touch with me.</p>
 </section>
 
 <!-- Contact form (Formspree) -->
@@ -481,7 +598,7 @@
 
     <div class="formcarry-block">
       <label for="fc-generated-1-email">Your Email Address</label>
-      <input type="email" name="email" id="fc-generated-1-email" placeholder="john@doe.com" required autocomplete="email" />
+      <input type="email" name="email" id="fc-generated-1-email" placeholder="yourmail@example.com" required autocomplete="email" />
     </div>
 
     <div class="formcarry-block">
@@ -511,7 +628,7 @@
   </div>
 </div>
 
-<footer><a href="https://cssiddheesh.netlify.app/" class="footer-link"><span class="footer-note">Made with <span class="heart" aria-hidden="true">💖</span> by CS Siddheesh © <span id="year"></span></span></a></footer>
+<footer><a href="https://www.cssiddheesh.in" class="footer-link"><span class="footer-note">Made with <span class="heart" aria-hidden="true">💖</span> by CS Siddheesh © <span id="year"></span></span></a></footer>
 
 
 
@@ -574,60 +691,36 @@
     });
   }
 
-  // ===== Form submission handling =====
-  const form = document.querySelector('form[action="https://formspree.io/f/mpqroneo"]');
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        if (response.ok) {
-          showSuccessPopup();
-          form.reset();
-        } else {
-          alert('Form submission failed.');
-        }
-      } catch (error) {
-        alert('An error occurred.');
-      }
+  // ===== View More Skills Toggle =====
+  const viewMoreBtn = document.getElementById('viewMoreBtn');
+  const additionalSkills = document.getElementById('additionalSkills');
+  if (viewMoreBtn && additionalSkills) {
+    viewMoreBtn.addEventListener('click', () => {
+      const isVisible = additionalSkills.style.display === 'block';
+      additionalSkills.style.display = isVisible ? 'none' : 'block';
+      viewMoreBtn.textContent = isVisible ? 'View More ▼' : 'View Less ▲';
     });
   }
 
-  // ===== Success popup functions =====
-  function showSuccessPopup() {
-    const popup = document.getElementById('successPopup');
-    popup.style.display = 'flex';
+  // ===== Show More Services Toggle =====
+  const showMoreServicesBtn = document.getElementById('showMoreServicesBtn');
+  const additionalServices = document.getElementById('additionalServices');
+  if (showMoreServicesBtn && additionalServices) {
+    showMoreServicesBtn.addEventListener('click', () => {
+      const isVisible = additionalServices.style.display === 'block';
+      additionalServices.style.display = isVisible ? 'none' : 'block';
+      showMoreServicesBtn.textContent = isVisible ? 'Show More Services ▼' : 'Show Less Services ▲';
+    });
   }
 
-  function hideSuccessPopup() {
-    const popup = document.getElementById('successPopup');
-    popup.style.display = 'none';
-  }
 
-  // Close popup when OK button is clicked
-  document.querySelector('.popup-close').addEventListener('click', hideSuccessPopup);
 
-  // Close popup when clicking outside the content
-  document.getElementById('successPopup').addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) {
-      hideSuccessPopup();
-    }
-  });
+
 
 </script>
 
 <script src="https://formspree.io/js/formbutton-v1.min.js" defer></script>
-<script>
-   window.formbutton=window.formbutton||function(){(formbutton.q=formbutton.q||[]).push(arguments)};
-   formbutton("create", {action: "https://formspree.io/f/mpqroneo"})
-</script>
+<script src="form-init.js" defer></script>
 
 </body>
 </html>
