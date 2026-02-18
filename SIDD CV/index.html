@@ -390,6 +390,8 @@
     }
 
 
+  .outline {
+}
   </style>
 </head>
 <body id="top">
@@ -476,61 +478,61 @@
   <div class="grid">
     <div class="glass service">
       <h3>Website Creation</h3>
-      <p>Build modern, responsive websites using HTML, CSS, and AI tools.</p>
-      <p class="price">Starting at $500</p>
+      <p>Build modern, responsive static websites using HTML, CSS, and AI tools.</p>
+      <p class="price">Starting at ₹4999</p>
       <a href="#contact" class="btn">Get a Quote</a>
       <a href="#contact" class="btn outline">View Details</a>
     </div>
+      <div class="glass service">
+        <h3>Monthly Maintenance</h3>
+        <p>Ongoing website maintenance and updates every month.</p>
+        <p class="price">Starting at ₹500/month</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
     <div class="glass service">
-      <h3>Website Publishing</h3>
-      <p>Deploy your website to the internet with hosting and domain setup.</p>
-      <p class="price">Starting at $200</p>
-      <a href="#contact" class="btn">Get a Quote</a>
-      <a href="#contact" class="btn outline">View Details</a>
-    </div>
-    <div class="glass service">
-      <h3>SEO Optimization</h3>
+      <h3>Basic SEO Optimization</h3>
       <p>Improve your website's visibility with search engine optimization.</p>
-      <p class="price">Starting at $300</p>
+      <p class="price">Starting at ₹1000</p>
       <a href="#contact" class="btn">Get a Quote</a>
       <a href="#contact" class="btn outline">View Details</a>
     </div>
   </div>
-  <button id="showMoreServicesBtn" class="btn outline" style="margin-top: 20px;">Show More Services ▼</button>
+  <button id="showMoreServicesBtn" class="btn outline" style="margin-top: 20px;">Add on Services▼</button>
   <div id="additionalServices" style="display: none;">
     <div class="grid">
       <div class="glass service">
         <h3>Custom Email</h3>
         <p>Set up custom email addresses for your domain.</p>
-        <p class="price">Starting at $100</p>
+        <p class="price">Starting at ₹200</p>
         <a href="#contact" class="btn">Get a Quote</a>
         <a href="#contact" class="btn outline">View Details</a>
       </div>
       <div class="glass service">
         <h3>Custom Shortlinks</h3>
         <p>Create branded shortlinks for easy sharing.</p>
-        <p class="price">Starting at $150</p>
+        <p class="price">Starting at ₹150</p>
         <a href="#contact" class="btn">Get a Quote</a>
         <a href="#contact" class="btn outline">View Details</a>
       </div>
       <div class="glass service">
         <h3>Social Media Setup</h3>
         <p>Configure and optimize your social media profiles.</p>
-        <p class="price">Starting at $250</p>
+        <p class="price">Starting at ₹250</p>
         <a href="#contact" class="btn">Get a Quote</a>
         <a href="#contact" class="btn outline">View Details</a>
       </div>
-      <div class="glass service">
-        <h3>Monthly Maintenance</h3>
-        <p>Ongoing website maintenance and updates every month.</p>
-        <p class="price">Starting at $150/month</p>
-        <a href="#contact" class="btn">Get a Quote</a>
-        <a href="#contact" class="btn outline">View Details</a>
-      </div>
+    <div class="glass service">
+      <h3>Website Publishing</h3>
+      <p>Deploy your website to the internet with hosting and domain setup.</p>
+      <p class="price">Starting at ₹200</p>
+      <a href="#contact" class="btn">Get a Quote</a>
+      <a href="#contact" class="btn outline">View Details</a>
+    </div>
       <div class="glass service">
         <h3>Quarterly Maintenance</h3>
         <p>Quarterly website check-ups and optimizations.</p>
-        <p class="price">Starting at $400/quarter</p>
+        <p class="price">Starting at ₹400/quarter</p>
         <a href="#contact" class="btn">Get a Quote</a>
         <a href="#contact" class="btn outline">View Details</a>
       </div>
@@ -702,14 +704,14 @@
     });
   }
 
-  // ===== Show More Services Toggle =====
+  // ===== Add on ServicesToggle =====
   const showMoreServicesBtn = document.getElementById('showMoreServicesBtn');
   const additionalServices = document.getElementById('additionalServices');
   if (showMoreServicesBtn && additionalServices) {
     showMoreServicesBtn.addEventListener('click', () => {
       const isVisible = additionalServices.style.display === 'block';
       additionalServices.style.display = isVisible ? 'none' : 'block';
-      showMoreServicesBtn.textContent = isVisible ? 'Show More Services ▼' : 'Show Less Services ▲';
+      showMoreServicesBtn.textContent = isVisible ? 'Add on Services▼' : 'Show Less Services ▲';
     });
   }
 
