@@ -727,25 +727,29 @@
 </script>
 
 <script>
-document.getElementById("contactForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
+document
+  .getElementById("contactForm")
+  .addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-  const formData = new FormData(this);
+    const formData = new FormData(this);
 
-  const response = await fetch("/api/contact", {
-    method: "POST",
-    body: formData
-  });
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message")
+    };
 
-  if (response.ok) {
-    document.getElementById("successPopup").style.display = "flex";
+    await fetch("https://forms.cssiddheesh-work.workers.dev", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    alert("Message sent!");
     this.reset();
-  } else {
-    alert("Failed to send message.");
-  }
 });
 </script>
-
 
 </body>
 </html>
