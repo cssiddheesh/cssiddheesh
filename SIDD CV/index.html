@@ -592,7 +592,7 @@
 
 <!-- Contact form (Cloudfared and Resend) -->
 <section class="formcarry-container">
-<form id="contact-form">
+<form id="contactForm">
 
   <div class="formcarry-block">
     <label>Full Name</label>
@@ -609,13 +609,6 @@
   </div>
 
   <div class="formcarry-block">
-    <label>Phone Number</label>
-    <input type="tel" name="phone"
-      placeholder="+91xxxxxxxxxx"
-      required autocomplete="tel">
-  </div>
-
-  <div class="formcarry-block">
     <label>Your Message</label>
     <textarea name="message"
       placeholder="Enter your message..."
@@ -627,6 +620,7 @@
   </div>
 
 </form>
+<p id="status"></p>
 </section>
 
 <!-- Custom Success Popup -->
@@ -726,30 +720,6 @@
 
 </script>
 
-<script>
-document
-  .getElementById("contactForm")
-  .addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      message: formData.get("message")
-    };
-
-    await fetch("https://forms.cssiddheesh-work.workers.dev", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    alert("Message sent!");
-    this.reset();
-});
-</script>
 
 </body>
 </html>

@@ -1,29 +1,36 @@
-// Form initialization
-window.formbutton=window.formbutton||function(){(formbutton.q=formbutton.q||[]).push(arguments)};
-formbutton("create", {action: "https://formspree.io/f/mpqroneo"})
-
-// Form submission handling
-const form = document.querySelector('form[action="https://formspree.io/f/mpqroneo"]');
+// Form submission handling - Using Cloudflare Worker endpoint
+const form = document.getElementById('contactForm');
 if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const formData = new FormData(form);
+
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message")
+    };
+
     try {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: formData,
+      const response = await fetch("https://forms.cssiddheesh-work.workers.dev", {
+        method: "POST",
         headers: {
-          'Accept': 'application/json'
-        }
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
       });
-      if (response.ok) {
+
+      const result = await response.json();
+
+      if (result.success) {
         showSuccessPopup();
         form.reset();
       } else {
-        alert('Form submission failed.');
+        document.getElementById("status").innerText = "Error sending message.";
       }
     } catch (error) {
-      alert('An error occurred.');
+      document.getElementById("status").innerText = "Error sending message.";
     }
   });
 }
