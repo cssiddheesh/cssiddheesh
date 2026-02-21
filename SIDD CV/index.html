@@ -12,7 +12,16 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/jpg" href="Assets/logo.jpg">
+  <link rel="icon" type="image/jpg" href="Assets/logo.webp">
+
+  <!-- START Formbricks Surveys -->
+  <script type="text/javascript">
+  !function(){
+      var appUrl = "https://app.formbricks.com";
+      var environmentId = "cmlvrn35ilwdhuf01yhy63n6r";
+      var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.src=appUrl+"/js/formbricks.umd.cjs",t.onload=function(){window.formbricks?window.formbricks.setup({environmentId:environmentId,appUrl:appUrl}):console.error("Formbricks library failed to load properly. The formbricks object is not available.");};var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}();
+  </script>
+  <!-- END Formbricks Surveys -->
 
   <style>
     :root {
@@ -31,7 +40,7 @@
     nav {
       position: fixed; top: 0; left: 0; width: 100%;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 15px 10%; background: #000; z-index: 1000;
+      padding: 15px 20px; background: #000; z-index: 1000;
     }
 
     nav h2 { color: var(--primary); font-weight: 600; }
@@ -411,6 +420,7 @@
     <a href="#about" class="btn outline">About</a>
     <a href="#skills" class="btn outline">Skills</a>
     <a href="#services" class="btn outline">Services</a>
+    <a href="pricing.html" class="btn outline">Pricing</a>
     <a href="#projects" class="btn outline">Projects</a>
     <a href="#social" class="btn outline">Social</a>
     <a href="#contact" class="btn outline">Contact</a>
