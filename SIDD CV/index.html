@@ -725,10 +725,9 @@
   }
 
 </script>
-// ===== Contact Form Handling =====
+
 <script>
-const form = document.getElementById("contact-form");
-const popup = document.getElementById("successPopup");
+const form = document.getElementById("contactForm");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -736,7 +735,7 @@ form.addEventListener("submit", async (e) => {
   const formData = {
     name: form.name.value,
     email: form.email.value,
-    phone: form.phone.value,
+    number: form.number.value,
     message: form.message.value
   };
 
@@ -753,7 +752,7 @@ form.addEventListener("submit", async (e) => {
     );
 
     if (response.ok) {
-      popup.classList.add("show");
+      document.getElementById("successPopup").style.display = "flex";
       form.reset();
     } else {
       alert("Failed to send message.");
@@ -763,11 +762,6 @@ form.addEventListener("submit", async (e) => {
     alert("Network error.");
   }
 });
-
-// popup close
-document.querySelector(".popup-close").onclick = () => {
-  popup.classList.remove("show");
-};
 </script>
 
 
