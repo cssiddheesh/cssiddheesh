@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:title" content="CS Siddheesh – Freelance Web Developer">
+  <meta property="og:description" content="Freelance web developer creating modern, fast, and responsive websites. Explore my portfolio and projects.">
+  <meta property="og:image" content="https://wwwcssiddheesh.in/Assets/portfolio_preview.webp">
+  <meta property="og:url" content="https://cssiddheesh.in">
+  <meta property="og:type" content="website">
+  <title>CS Siddheesh | Freelance Web Developer | Student</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/jpg" href="Assets/logo.webp">
+
+  <style>
+    :root {
+      --primary: #ff7a18;
+      --dark: #0b0b0b;
+      --glass: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.18);
+      --text-muted: #b5b5b5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: #fff; }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 20px; background: #000; z-index: 1000;
+    }
+
+    nav h2 { color: var(--primary); font-weight: 600; }
+    /* clickable site logo */
+    .site-logo {
+      font-weight: 700; font-size: 1.15rem; text-decoration: none; cursor: pointer; display: inline-block;
+      background: linear-gradient(90deg, var(--primary) 0%, #ffb86b 35%, #ffd27a 65%, var(--primary) 100%);
+      background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+      transition: transform 180ms ease, text-shadow 180ms ease;
+      transform-origin: center center; text-shadow: 0 0 12px rgba(255,122,24,0.08);
+    }
+
+    /* hover/focus: slightly larger lift and stronger glow */
+    .site-logo:hover, .site-logo:focus { transform: translateY(-4px) scale(1.02); text-decoration: none; text-shadow: 0 8px 28px rgba(255,122,24,0.28); }
+
+
+
+    /* Respect prefers-reduced-motion: use static primary color and no bounce */
+    @media (prefers-reduced-motion: reduce) {
+      .site-logo { background: none; -webkit-text-fill-color: initial; color: var(--primary); text-shadow: none; transform: none; }
+      .site-logo:hover, .site-logo:focus { transform: none; }
+    }
+
+    /* nav links wrapper */
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-links a {
+      color: #fff; font-size: 0.95rem; text-decoration: none;
+      padding: 8px 16px; transition: color 180ms ease;
+    }
+
+    /* Hover & focus state: subtle color change */
+    .nav-links a:hover,
+    .nav-links a:focus {
+      color: var(--primary); text-decoration: underline;
+    }
+
+    /* Visible focus ring for keyboard users */
+    .nav-links a:focus-visible {
+      outline: 2px solid var(--primary); outline-offset: 2px;
+    }
+
+    /* Buttons lift on hover too */
+    /* Removed excessive transforms */
+
+    /* hamburger toggle (hidden on desktop) */
+    .nav-toggle {
+      display: none; background: transparent; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 6px; line-height: 0;
+    }
+
+    /* Animated hamburger (3 bars) */
+    .nav-toggle .hamburger { display:inline-block; width:22px; height:16px; position:relative; }
+    .nav-toggle .hamburger::before,
+    .nav-toggle .hamburger::after,
+    .nav-toggle .hamburger span { content: ''; position:absolute; left:0; height:2px; right:0; background: #fff; border-radius:2px; transition: transform 220ms cubic-bezier(.2,.9,.3,1), top 220ms cubic-bezier(.2,.9,.3,1), opacity 180ms ease; }
+    .nav-toggle .hamburger::before { top:0; }
+    .nav-toggle .hamburger span { top:7px; }
+    .nav-toggle .hamburger::after { top:14px; }
+
+    /* Morph to X when open */
+    .nav-toggle.open .hamburger span { opacity: 0; transform: translateX(-8px); }
+    .nav-toggle.open .hamburger::before { top:7px; transform: rotate(45deg); }
+    .nav-toggle.open .hamburger::after { top:7px; transform: rotate(-45deg); }
+
+    /* Mobile behavior */
+    @media (max-width: 768px) {
+      nav { padding: 12px 5%; }
+      .nav-toggle { display: block; }
+
+      /* Simple dropdown menu */
+      .nav-links {
+        position: fixed; top: 64px; right: 5%; left: auto; display: none;
+        flex-direction: column; align-items: flex-end; background: #000;
+        padding: 14px; gap: 10px; z-index: 999; max-width: 360px; min-width: 220px; border-radius: 10px;
+      }
+      .nav-links.open { display: flex; }
+
+      /* Simple links without animations */
+      .nav-links a { display: block; margin: 0; padding: 8px 16px; color: #fff; text-decoration: none; }
+      .nav-links a:hover, .nav-links a:focus { color: var(--primary); text-decoration: underline; }
+      .nav-links a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+      /* ensure hero spacing doesn't get hidden behind the fixed nav */
+      section { padding-top: 110px; }
+    }
+
+    .scroll-bar {
+      position: fixed; top: 0; left: 0; height: 4px;
+      background: var(--primary); width: 0%; z-index: 2000;
+    }
+
+    section { padding: 100px 10%; }
+
+    /* ===== HERO ===== */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+    .hero h1 { font-size: 3rem; font-weight: 700; }
+    .typing span { color: var(--primary); border-right: 2px solid; padding-right: 4px; }
+    .hero p { margin: 20px 0; max-width: 600px; color: var(--text-muted); }
+
+    /* Primary buttons (filled) */
+    .btn {
+      display: inline-block; padding: 14px 32px; border-radius: 30px;
+      background: var(--primary); color: #fff; margin-right: 25px; font-size: 1rem;
+      border: 1px solid var(--primary); box-sizing: border-box;
+      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 120ms ease;
+    }
+
+    /* Outline variant starts transparent but uses same sizing */
+    .btn.outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+
+    /* Ensure nav and contact buttons follow the same visual behaviour */
+    .nav-links a, .contact-buttons a { transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 120ms ease; }
+
+    /* Hover / Focus: invert to filled primary with white text */
+    .btn:hover, .btn:focus,
+    .btn.outline:hover, .btn.outline:focus,
+    .nav-links a:hover, .nav-links a:focus,
+    .contact-buttons a:hover, .contact-buttons a:focus {
+      background: var(--primary); color: #fff; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+
+    /* Active / pressed state (subtle inset) */
+    .btn:active, .btn.outline:active, .nav-links a:active, .contact-buttons a:active {
+      transform: translateY(1px); box-shadow: inset 0 3px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Focus visible for keyboard accessibility */
+    .btn:focus-visible, .btn.outline:focus-visible, .nav-links a:focus-visible, .contact-buttons a:focus-visible {
+      outline: none; box-shadow: 0 0 0 6px rgba(255,122,24,0.12), 0 6px 18px rgba(0,0,0,0.35);
+    }
+
+    /* ===== GLASS CARDS ===== */
+    .glass {
+      background: var(--glass); backdrop-filter: blur(15px);
+      border: 1px solid var(--border); border-radius: 18px;
+    }
+
+    /* ===== ABOUT ===== */
+    .about p { max-width: 800px; color: var(--text-muted); }
+    .email-link { color: var(--primary); text-decoration: none; }
+    .email-link:hover { text-decoration: underline; }
+
+    /* ===== SKILLS ===== */
+    .skills .bar { margin-bottom: 18px; }
+    .skills span { font-size: 0.9rem; }
+    .progress {
+      height: 10px; background: #222; border-radius: 20px; overflow: hidden;
+    }
+    .progress div { height: 100%; width: 0; background: var(--primary); transition: width 1.5s ease-out; border-radius: 0 20px 20px 0; }
+
+    /* ===== GRID ===== */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 25px; margin-top: 40px; justify-content: center; }
+
+    /* ===== SERVICE BOXES ===== */
+    .service { padding: 20px; }
+
+    /* ===== PROJECT IMAGE ===== */
+    .project img { width: 100%; border-radius: 12px; margin-bottom: 12px; }
+
+    /* ===== CONTACT ===== */
+    .contact-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      justify-items: center;
+    }
+    .contact-buttons a { margin-right: 0; padding: 14px 32px; font-size: 1rem; }
+    .contact-buttons img { width: 40px; height: 40px; object-fit: contain; }
+
+
+
+    /* ===== SCROLL ANIMATION ===== */
+    .reveal { opacity: 0; transform: translateY(50px); transition: 0.8s; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    footer { text-align: center; padding: 25px; color: var(--text-muted); }
+
+    /* Footer animated glow + heartbeat */
+    .footer-note {
+      display: inline-block; color: #fff; font-weight: 500; letter-spacing: 0.2px;
+      transition: text-shadow 200ms ease, transform 200ms ease;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    .footer-note .heart {
+      display: inline-block; margin: 0 6px; transform-origin: center center;
+      animation: heartbeat 1.6s ease-in-out infinite; font-size: 1em;
+      text-shadow: 0 0 10px rgba(255,122,24,0.75);
+    }
+
+    @keyframes pulseGlow {
+      0% { text-shadow: 0 0 0 rgba(255,122,24,0); transform: translateY(0); }
+      50% { text-shadow: 0 0 18px rgba(255,122,24,0.95), 0 0 40px rgba(255,122,24,0.35); transform: translateY(-3px); }
+      100% { text-shadow: 0 0 0 rgba(255,122,24,0); transform: translateY(0); }
+    }
+
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.18); }
+      40% { transform: scale(1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Respect user preference for reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .footer-note, .footer-note .heart { animation: none; }
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.2rem; }
+      .btn, .contact-buttons a { padding: 12px 22px; font-size: 0.95rem; }
+    }
+
+    /* ===== FORM CARRY (Contact form) ===== */
+    .formcarry-container {
+      box-sizing: border-box;
+      margin: 40px auto 0 auto;
+      padding: 0 16px;
+      font-family: "Inter", sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: -0.01em;
+      width: 100%;
+      max-width: 400px;
+
+      /* NORMAL */
+      --fc-border-color: #ECEFF9;
+      --fc-normal-text-color: #0E0B3D;
+      --fc-normal-placeholder-color: #B3B8D0;
+
+      /* PRIMARY COLOR | HSL FORMAT*/
+      --fc-primary-color-hue: 18;
+      --fc-error-color-hue: 356;
+      --fc-primary-hsl: var(--fc-primary-color-hue), 93%, 62%;
+      --fc-error-hsl: var(--fc-error-color-hue), 100%, 54%;
+
+      /* HOVER */
+      --fc-field-hover-bg-color: #F7F9FC;
+      --fc-border-hover-color: #DDE0EE;
+      --fc-field-hover-text-color: #B3B8D0;
+
+      --fc-border-active-color: #1463FF;
+    }
+
+    .formcarry-container * { box-sizing: border-box; }
+    .formcarry-container label { display: block; cursor: pointer; }
+    .formcarry-container .formcarry-block:not(:first-child) { margin-top: 16px; }
+    .formcarry-container input, .formcarry-container textarea, .formcarry-container select {
+      margin-top: 4px; width: 100%; height: 42px; border: 1px solid var(--fc-border-color); box-shadow: 0 1px 2px var(--fc-border-color); color: var(--fc-normal-text-color); border-radius: 10px; padding: 8px 12px; font-family: "Inter", sans-serif; font-size:14px; transition: 125ms background, 125ms color, 125ms box-shadow; }
+    .formcarry-container textarea { min-height: 188px; max-width: 100%; padding-top: 12px; }
+    .formcarry-container input::placeholder, .formcarry-container textarea::placeholder, .formcarry-container select::placeholder { color: var(--fc-normal-placeholder-color); }
+    .formcarry-container input:hover, .formcarry-container textarea:hover, .formcarry-container select:hover { border-color: var(--fc-border-hover-color); background-color: var(--fc-field-hover-bg-color); }
+    .formcarry-container input:hover::placeholder, .formcarry-container textarea:hover::placeholder, .formcarry-container select:hover::placeholder { color: var(--fc-field-hover-text-color); }
+    .formcarry-container input:focus, .formcarry-container textarea:focus, .formcarry-container select:focus { background-color: #fff; border: 2px solid hsl(var(--fc-primary-hsl)); box-shadow: hsla(var(--fc-primary-hsl), 8%) 0px 0px 0px 3px; outline: none; }
+    .formcarry-container input:focus, .formcarry-container select:focus { padding: 8px 11px; }
+    .formcarry-container textarea:focus { padding: 11px; }
+    .formcarry-container select { background-size: 24px 24px; background-position: 98%; background-repeat: no-repeat; appearance: none; -webkit-appearance: none; }
+    .formcarry-container button { font-family: "Inter", sans-serif; font-weight: 500; font-size: 14px; letter-spacing: -0.02em; height: 40px; line-height: 24px; width: 100%; border: 0; border-radius: 10px; box-sizing: border-box; background-color: #FF7A18; color: #fff; cursor: pointer; box-shadow: 0 0 0 0 transparent; transition: 125ms all; }
+    .formcarry-container button:hover { background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), hsla(var(--fc-primary-hsl)); }
+    .formcarry-container button:focus { background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), hsla(var(--fc-primary-hsl)); border-inline: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0px 0px 0px 3px rgba(var(--fc-primary-hsl), 0.12); }
+    .formcarry-container button:active { background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), hsla(var(--fc-primary-hsl)); }
+    .formcarry-container button:disabled { background-color: hsla(var(--fc-primary-hsl), 40%); cursor: not-allowed; }
+    .formcarry-container input:focus:required:invalid, .formcarry-container input:focus:invalid, .formcarry-container select:focus:required:invalid, .formcarry-container select:focus:invalid { color: hsl(var(--fc-error-hsl)); border-color: hsl(var(--fc-error-hsl)); box-shadow: 0px 0px 0px 3px hsla(var(--fc-error-hsl), 12%); }
+
+    /* ===== CUSTOM SUCCESS POPUP ===== */
+    .popup-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+      display: none; justify-content: center; align-items: center; z-index: 3000;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .popup-content {
+      background: var(--glass); backdrop-filter: blur(15px);
+      border: 1px solid var(--border); border-radius: 18px;
+      padding: 30px; text-align: center; max-width: 350px; width: 90%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      animation: slideUp 0.4s ease-out;
+    }
+
+    .popup-icon {
+      font-size: 3rem; margin-bottom: 15px;
+      animation: bounceIn 0.6s ease-out;
+    }
+
+    .popup-content h3 {
+      color: var(--primary); font-size: 1.5rem; margin-bottom: 10px;
+    }
+
+    .popup-content p {
+      color: var(--text-muted); margin-bottom: 20px;
+    }
+
+    .popup-close {
+      background: var(--primary); color: #fff; border: none;
+      padding: 10px 20px; border-radius: 25px; cursor: pointer;
+      font-size: 1rem; transition: transform 0.2s ease;
+    }
+
+    .popup-close:hover {
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      text-decoration: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Mobile optimization */
+    @media (max-width: 768px) {
+      .back-to-top {
+        right: 20px;
+        left: auto;
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+      }
+    }
+
+
+  .outline {
+}
+  </style>
+</head>
+<body id="top">
+
+
+
+<div class="scroll-bar" id="scrollBar"></div>
+
+<a href="#top" id="backToTop" class="back-to-top">↑</a>
+
+<nav>
+  <a href="#top" class="site-logo" aria-label="Go to top">CS Siddheesh</a>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="hamburger" aria-hidden="true"><span></span></span>
+  </button>
+  <div class="nav-links" id="navLinks" aria-hidden="true">
+    <a href="#about" class="btn outline">About</a>
+    <a href="#skills" class="btn outline">Skills</a>
+    <a href="#services" class="btn outline">Services</a>
+    <a href="pricing.html" class="btn outline">Pricing</a>
+    <a href="#projects" class="btn outline">Projects</a>
+    <a href="#social" class="btn outline">Social</a>
+    <a href="#contact" class="btn outline">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1 class="typing">I Build <span id="type"></span></h1>
+  <p>I help freelancers and small businesses get more inquiries with fast, professional websites.</p>
+  <a href="#contact" class="btn outline">Hire Me</a><br>
+  <a href="#projects" class="btn outline">View Work</a>
+</section>
+
+<section id="about" class="about reveal">
+  <h2>About Me</h2> <br>
+ <p>
+    Hi, I’m <strong>CS Siddheesh</strong> — a freelance web developer who builds
+    fast, professional websites for freelancers and small businesses.
+  </p>
+  <br>
+  <p>
+    I focus on creating websites that don’t just look good, but actually help
+    you get more inquiries. That means clean design, clear structure, and
+    performance-focused code — without unnecessary features or bloated scripts.
+  </p>
+  <br>
+  <p>
+    I work with modern web standards to build responsive, SEO-ready websites
+    that load quickly and are easy to maintain. Whether you need a personal
+    portfolio, a business website, or a landing page, my goal is simple:
+    make your online presence clear, credible, and effective.
+  </p>
+   <br>
+  <p>I believe a good website should be:</p>
+
+  <ul>
+    <li>Easy for visitors to understand</li>
+    <li>Fast on all devices</li>
+    <li>Built with long-term growth in mind</li>
+  </ul>
+   <br>
+  <p>
+    If you’re looking for a developer who values clarity, performance, and
+    practical results — I’d be happy to work with you.
+  </p>
+
+  <p>
+    📩 <strong>Email:</strong>
+    <a href="mailto:contact@cssiddheesh.in" >contact@cssiddheesh.in</a>
+  </p>
+
+</section>
+
+<section id="skills" class="skills reveal">
+  <h2>Skills</h2> <br>
+  <div class="bar"><span>HTML</span><div class="progress"><div data-width="90%"></div></div></div>
+  <div class="bar"><span>CSS</span><div class="progress"><div data-width="85%"></div></div></div>
+  <div class="bar"><span>Python</span><div class="progress"><div data-width="60%"></div></div></div>
+  <div class="bar"><span>Bash</span><div class="progress"><div data-width="40%"></div></div></div>
+  <div class="bar"><span>AI</span><div class="progress"><div data-width="95%"></div></div></div>
+</section>
+
+<section id="services" class="reveal">
+  <h2>Services</h2>
+  <div class="grid">
+    <div class="glass service">
+      <h3>Website Creation</h3>
+      <p>Build modern, responsive static websites using HTML, CSS, and AI tools.</p>
+      <p class="price">Starting at ₹4999</p>
+      <a href="#contact" class="btn">Get a Quote</a>
+      <a href="#contact" class="btn outline">View Details</a>
+    </div>
+      <div class="glass service">
+        <h3>Monthly Maintenance</h3>
+        <p>Ongoing website maintenance and updates every month.</p>
+        <p class="price">Starting at ₹500/month</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+    <div class="glass service">
+      <h3>Basic SEO Optimization</h3>
+      <p>Improve your website's visibility with search engine optimization.</p>
+      <p class="price">Starting at ₹1000</p>
+      <a href="#contact" class="btn">Get a Quote</a>
+      <a href="#contact" class="btn outline">View Details</a>
+    </div>
+  </div>
+  <button id="showMoreServicesBtn" class="btn outline" style="margin-top: 20px;">Add on Services▼</button>
+  <div id="additionalServices" style="display: none;">
+    <div class="grid">
+      <div class="glass service">
+        <h3>Custom Email</h3>
+        <p>Set up custom email addresses for your domain.</p>
+        <p class="price">Starting at ₹200</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+      <div class="glass service">
+        <h3>Custom Shortlinks</h3>
+        <p>Create branded shortlinks for easy sharing.</p>
+        <p class="price">Starting at ₹150</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+      <div class="glass service">
+        <h3>Social Media Setup</h3>
+        <p>Configure and optimize your social media profiles.</p>
+        <p class="price">Starting at ₹250</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+    <div class="glass service">
+      <h3>Website Publishing</h3>
+      <p>Deploy your website to the internet with hosting and domain setup.</p>
+      <p class="price">Starting at ₹200</p>
+      <a href="#contact" class="btn">Get a Quote</a>
+      <a href="#contact" class="btn outline">View Details</a>
+    </div>
+      <div class="glass service">
+        <h3>Quarterly Maintenance</h3>
+        <p>Quarterly website check-ups and optimizations.</p>
+        <p class="price">Starting at ₹400/quarter</p>
+        <a href="#contact" class="btn">Get a Quote</a>
+        <a href="#contact" class="btn outline">View Details</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" class="reveal">
+  <h2>Projects</h2>
+  <div class="grid">
+    <div class="glass project">
+      <img src="Assets/bussiness_preview.webp" alt="Business Website">
+      <h3>Business Website</h3>
+      <a href="Sample Projects/Business projects/Examples_1/index.html" target="_blank" class="btn">Preview Project</a>
+    </div>
+    <div class="glass project">
+      <img src="Assets/portfolio_preview.webp" alt="Portfolio Project">
+      <h3>Portfolio Website</h3>
+      <a href="https://www.cssiddheesh.in" target="_blank" class="btn">Preview Project</a>
+    </div>
+  </div>
+</section>
+
+<section id="social" class="reveal">
+  <h2>Follow Me</h2>
+  <br>
+  <div class="contact-buttons">
+    <a class="btn outline" href="https://instagram.com/cssiddheesh" target="_blank" aria-label="Follow on Instagram"><img src="Assets/Social_Media_Icons/instagram.svg" alt="Instagram" loading="lazy"></a>
+    <a class="btn outline" href="https://github.com/cssiddheesh" target="_blank" aria-label="Follow on GitHub"><img src="Assets/Social_Media_Icons/001-github.svg" alt="GitHub" loading="lazy"></a>
+    <a class="btn outline" href="https://linkedin.com/in/cssiddheesh" target="_blank" aria-label="Connect on LinkedIn"><img src="Assets/Social_Media_Icons/007-linkedin.svg" alt="LinkedIn" loading="lazy"></a>
+    <a class="btn outline" href="https://facebook.com/cssiddheesh" target="_blank" aria-label="Follow on Facebook"><img src="Assets/Social_Media_Icons/004-facebook.svg" alt="Facebook" loading="lazy"></a>
+    <a class="btn outline" href="https://x.com/cssiddheesh" target="_blank" aria-label="Follow on X"><img src="Assets/Social_Media_Icons/008-twitter.svg" alt="X" loading="lazy"></a>
+    <a class="btn outline" href="https://pinterest.com/cssiddheesh" target="_blank" aria-label="Follow on Pinterest"><img src="Assets/Social_Media_Icons/pintrest.svg" alt="Pinterest" loading="lazy"></a>
+    <a class="btn outline" href="https://threads.net/@cssiddheesh" target="_blank" aria-label="Follow on Threads"><img src="Assets/Social_Media_Icons/005-gmail.svg" alt="Threads" loading="lazy"></a>
+    <a class="btn outline" href="https://linktr.ee/cssiddheesh" target="_blank" aria-label="Visit Linktree"><img src="Assets/Social_Media_Icons/linktree.png" alt="Linktree" loading="lazy"></a>
+    <a class="btn outline" href="https://youtube.com/@cssiddheesh" target="_blank" aria-label="Subscribe on YouTube"><img src="Assets/Social_Media_Icons/009-youtube.svg" alt="YouTube" loading="lazy"></a>
+  </div>
+</section>
+
+<section id="contact" class="reveal">
+  <h2>Contact Me</h2>
+  <p>Let’s build something great together.</p>
+  <br>
+  <div class="contact-buttons">
+    <a class="email-link" href="mailto:contact@cssiddheesh.in">contact@cssiddheesh.in</a>
+    <a class="btn outline" href="https://ig.me/m/cssiddheesh" target="_blank">Instagram (DM) </a>
+  </div>
+
+</section>
+
+
+<section id="fill-this" class="reveal">
+  <h2>Fill This</h2>
+  <p>Please fill out the form below to get in touch with me.</p>
+</section>
+
+<!-- Contact form (Cloudfared and Resend) -->
+<section class="formcarry-container">
+<form id="contactForm">
+
+  <div class="formcarry-block">
+    <label>Full Name</label>
+    <input type="text" name="name"
+      placeholder="Your first and last name"
+      required autocomplete="name">
+  </div>
+
+  <div class="formcarry-block">
+    <label>Your Email Address</label>
+    <input type="email" name="email"
+      placeholder="yourmail@example.com"
+      required autocomplete="email">
+  </div>
+
+  <div class="formcarry-block">
+    <label>Your Message</label>
+    <textarea name="message"
+      placeholder="Enter your message..."
+      required></textarea>
+  </div>
+
+  <div class="formcarry-block">
+    <button type="submit">Send</button>
+  </div>
+
+</form>
+<p id="status"></p>
+</section>
+
+<!-- Custom Success Popup -->
+<div id="successPopup" class="popup-overlay">
+  <div class="popup-content">
+    <div class="popup-icon">✅</div>
+    <h3>Thank You!</h3>
+    <p>We will contact you in 2 business days.</p>
+    <button class="popup-close">OK</button>
+  </div>
+</div>
+
+<footer><a href="https://www.cssiddheesh.in" class="footer-link"><span class="footer-note">Made with <span class="heart" aria-hidden="true">💖</span> by CS Siddheesh © <span id="year"></span></span></a></footer>
+
+
+
+<script>
+  document.getElementById('year').innerText = new Date().getFullYear();
+
+  // Typing Effect
+  const text = "Clean & Modern Websites";
+  let i = 0;
+  function type() { if(i < text.length){ document.getElementById('type').innerHTML += text.charAt(i); i++; setTimeout(type, 80);} }
+  type();
+
+  // Scroll reveal & progress bars & scroll indicator & back to top
+  const reveals = document.querySelectorAll('.reveal');
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    reveals.forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('active'); });
+    document.querySelectorAll('.progress div').forEach(bar => { if(bar.getBoundingClientRect().top < window.innerHeight - 50) bar.style.width = bar.dataset.width; });
+    const scroll = document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('scrollBar').style.width = (scroll/height)*100 + '%';
+    if (backToTop) {
+      if (scroll > 300) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+    }
+  });
+
+  // ===== Responsive nav toggle =====
+  const navToggle = document.querySelector('.nav-toggle');
+  const navLinks = document.getElementById('navLinks');
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      navLinks.setAttribute('aria-hidden', String(!isOpen));
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+      navToggle.classList.toggle('open', isOpen);
+    });
+
+    // Close mobile menu when a link is clicked
+    document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => {
+      if (navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open');
+        navLinks.setAttribute('aria-hidden', 'true');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.classList.remove('open');
+      }
+    }));
+
+    // Ensure menu closes when resizing to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open');
+        navLinks.setAttribute('aria-hidden', 'true');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.classList.remove('open');
+      }
+    });
+  }
+
+  // ===== View More Skills Toggle =====
+  const viewMoreBtn = document.getElementById('viewMoreBtn');
+  const additionalSkills = document.getElementById('additionalSkills');
+  if (viewMoreBtn && additionalSkills) {
+    viewMoreBtn.addEventListener('click', () => {
+      const isVisible = additionalSkills.style.display === 'block';
+      additionalSkills.style.display = isVisible ? 'none' : 'block';
+      viewMoreBtn.textContent = isVisible ? 'View More ▼' : 'View Less ▲';
+    });
+  }
+
+  // ===== Add on ServicesToggle =====
+  const showMoreServicesBtn = document.getElementById('showMoreServicesBtn');
+  const additionalServices = document.getElementById('additionalServices');
+  if (showMoreServicesBtn && additionalServices) {
+    showMoreServicesBtn.addEventListener('click', () => {
+      const isVisible = additionalServices.style.display === 'block';
+      additionalServices.style.display = isVisible ? 'none' : 'block';
+      showMoreServicesBtn.textContent = isVisible ? 'Add on Services▼' : 'Show Less Services ▲';
+    });
+  }
+
+</script>
+
+<script>
+  const form = document.getElementById('contactForm');
+  const status = document.getElementById('status');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Update UI to show sending state
+    status.innerText = "Sending...";
+    status.style.color = "inherit";
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('https://forms.cssiddheesh-work.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        status.innerText = "Thanks! Your message has been sent.";
+        status.style.color = "green";
+        form.reset();
+        // Show the custom success popup
+        document.getElementById('successPopup').style.display = 'flex';
+      } else {
+        const err = await response.text();
+        status.innerText = "Error: " + err;
+        status.style.color = "red";
+      }
+    } catch (error) {
+      status.innerText = "Something went wrong. Please try again later.";
+      status.style.color = "red";
+    }
+  });
+
+  // Popup close functionality
+  const popup = document.getElementById('successPopup');
+  const closeBtn = popup.querySelector('.popup-close');
+  closeBtn.addEventListener('click', () => {
+    popup.style.display = 'none';
+  });
+  
+  // Close popup when clicking outside
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) {
+      popup.style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>

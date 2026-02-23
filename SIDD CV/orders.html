@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CS Siddheesh | Order Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/jpg" href="Assets/logo.webp">
+
+  <style>
+    :root {
+      --primary: #ff7a18;
+      --dark: #0b0b0b;
+      --text-muted: #b5b5b5;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: #fff; min-height: 100vh; }
+
+    .scroll-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--primary); width: 0%; z-index: 2000; }
+
+    .back-to-top {
+      position: fixed; left: 20px; bottom: 20px; width: 50px; height: 50px;
+      background: var(--primary); color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; text-decoration: none; opacity: 0; visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease; z-index: 1000;
+    }
+    .back-to-top.show { opacity: 1; visibility: visible; }
+
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 20px; background: #000; z-index: 1000;
+    }
+    
+    .site-logo {
+      font-weight: 700; font-size: 1.15rem; text-decoration: none; cursor: pointer; display: inline-block;
+      background: linear-gradient(90deg, var(--primary) 0%, #ffb86b 35%, #ffd27a 65%, var(--primary) 100%);
+      background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+      transition: transform 180ms ease, text-shadow 180ms ease;
+      transform-origin: center center; text-shadow: 0 0 12px rgba(255,122,24,0.08);
+    }
+    .site-logo:hover, .site-logo:focus { transform: translateY(-4px) scale(1.02); text-decoration: none; text-shadow: 0 8px 28px rgba(255,122,24,0.28); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .site-logo { background: none; -webkit-text-fill-color: initial; color: var(--primary); text-shadow: none; transform: none; }
+      .site-logo:hover, .site-logo:focus { transform: none; }
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-links a {
+      color: #fff; font-size: 0.95rem; text-decoration: none;
+      padding: 8px 16px; transition: color 180ms ease;
+    }
+    .nav-links a:hover, .nav-links a:focus { color: var(--primary); text-decoration: underline; }
+
+    .nav-toggle {
+      display: none; background: transparent; border: none; color: #fff; font-size: 1.6rem; cursor: pointer; padding: 6px; line-height: 0;
+    }
+    .nav-toggle .hamburger { display:inline-block; width:22px; height:16px; position:relative; }
+    .nav-toggle .hamburger::before, .nav-toggle .hamburger::after, .nav-toggle .hamburger span {
+      content: ''; position:absolute; left:0; height:2px; right:0; background: #fff; border-radius:2px;
+      transition: transform 220ms cubic-bezier(.2,.9,.3,1), top 220ms cubic-bezier(.2,.9,.3,1), opacity 180ms ease;
+    }
+    .nav-toggle .hamburger::before { top:0; }
+    .nav-toggle .hamburger span { top:7px; }
+    .nav-toggle .hamburger::after { top:14px; }
+    .nav-toggle.open .hamburger span { opacity: 0; transform: translateX(-8px); }
+    .nav-toggle.open .hamburger::before { top:7px; transform: rotate(45deg); }
+    .nav-toggle.open .hamburger::after { top:7px; transform: rotate(-45deg); }
+
+    @media (max-width: 768px) {
+      nav { padding: 12px 5%; }
+      .nav-toggle { display: block; }
+      .nav-links {
+        position: fixed; top: 64px; right: 5%; left: auto; display: none;
+        flex-direction: column; align-items: flex-end; background: #000;
+        padding: 14px; gap: 10px; z-index: 999; max-width: 360px; min-width: 220px; border-radius: 10px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { display: block; margin: 0; padding: 8px 16px; color: #fff; text-decoration: none; }
+    }
+
+    .btn {
+      display: inline-block; padding: 14px 32px; border-radius: 30px;
+      background: var(--primary); color: #fff; margin-right: 25px; font-size: 1rem;
+      border: 1px solid var(--primary); box-sizing: border-box;
+      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 120ms ease;
+      text-decoration: none;
+    }
+    .btn.outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .btn:hover, .btn:focus, .btn.outline:hover, .btn.outline:focus {
+      background: var(--primary); color: #fff; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+
+    .contact-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; justify-items: center; }
+    .contact-buttons a { margin-right: 0; padding: 14px 32px; font-size: 1rem; }
+    .contact-buttons img { width: 40px; height: 40px; object-fit: contain; }
+    .email-link { color: var(--primary); text-decoration: none; }
+    .email-link:hover { text-decoration: underline; }
+
+    section { padding: 60px 5%; }
+    section h2 { text-align: center; font-size: 2rem; margin-bottom: 20px; color: var(--primary); }
+    section p { text-align: center; color: var(--text-muted); }
+
+    @media (max-width: 600px) {
+      section#social, section#contact { padding: 50px 5%; }
+      section h2 { font-size: 1.5rem; }
+      .contact-buttons { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .contact-buttons a { padding: 10px 15px; font-size: 0.85rem; }
+      .contact-buttons img { width: 30px; height: 30px; }
+    }
+
+    /* ===== ORDER FORM ===== */
+    .form-container {
+      max-width: 800px;
+      margin: 100px auto 40px;
+      background: #0a0a0a;
+      padding: 30px;
+      border-radius: 14px;
+      border: 1px solid #222;
+    }
+    .form-container h2 { text-align: center; color: var(--primary); margin-bottom: 20px; }
+    .form-container h3 { color: var(--primary); }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .form-group label {
+      display: block;
+      margin-top: 14px;
+      font-weight: bold;
+      color: #cfcfcf;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 8px;
+      background: #111;
+      border: 1px solid #222;
+      color: #fff;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .checkbox-group label {
+      font-weight: normal;
+      color: #fff;
+      display: block;
+      margin: 8px 0;
+    }
+
+    .form-buttons {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .form-buttons button {
+      padding: 10px 22px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 14px;
+      border: 1px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      transition: 0.3s ease;
+    }
+    .form-buttons button:hover {
+      background: var(--primary);
+      color: #000;
+    }
+    .form-buttons .submit-btn {
+      width: 100%;
+      margin-top: 20px;
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .invoice-box {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+      border: 1px solid #222;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #222;
+      padding: 8px;
+    }
+    th {
+      background: #1a1a1a;
+      color: var(--primary);
+      text-align: left;
+    }
+    td { text-align: right; }
+    td:first-child { text-align: left; }
+
+    hr { border: 1px solid #222; margin: 15px 0; }
+
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .invoice-header h2 { text-align: left; margin: 0; }
+    .invoice-header .invoice-meta { text-align: right; }
+
+    .total-line {
+      font-weight: bold;
+      color: var(--primary);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .form-container { padding: 20px; margin: 90px 15px 30px; }
+      .form-buttons { flex-direction: column; }
+    }
+  </style>
+</head>
+<body id="pricing-top">
+
+<div class="scroll-bar" id="scrollBar"></div>
+<a href="#pricing-top" id="backToTop" class="back-to-top">↑</a>
+
+<nav>
+  <a href="index.html" class="site-logo" aria-label="Go to home">CS Siddheesh</a>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="hamburger" aria-hidden="true"><span></span></span>
+  </button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html" class="btn outline">Home</a>
+    <a href="index.html#about" class="btn outline">About</a>
+    <a href="index.html#skills" class="btn outline">Skills</a>
+    <a href="index.html#projects" class="btn outline">Projects</a>
+    <a href="#social" class="btn outline">Social</a>
+    <a href="#contact" class="btn outline">Contact</a>
+  </div>
+</nav>
+
+<!-- ===== ORDER FORM ===== -->
+<div class="form-container">
+  <h2>ORDER FORM</h2>
+
+  <form id="orderForm">
+    <!-- STEP 1 -->
+    <div class="step active">
+      <h3>Personal Details</h3>
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="name" required>
+      </div>
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" id="email" required>
+      </div>
+      <div class="form-group">
+        <label>Phone Number *</label>
+        <input type="tel" id="phone" required>
+      </div>
+      <div class="form-group">
+        <label>Address *</label>
+        <input type="text" id="address" required>
+      </div>
+      <div class="form-group">
+        <label>Company Name</label>
+        <input type="text" id="company">
+      </div>
+      <div class="form-buttons">
+        <button type="button" onclick="nextStep()">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <h3>Select Services</h3>
+      <div class="form-group">
+        <label>Website Creation</label>
+        <select id="website">
+          <option value="0">None</option>
+          <option value="4999">Starter Website ₹4999</option>
+          <option value="7999">Pro Website ₹7999</option>
+          <option value="11999">Business Website ₹11999</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Maintenance</label>
+        <select id="maintenance">
+          <option value="0">None</option>
+          <option value="500">Monthly Maintenance ₹500</option>
+          <option value="1399">Quarterly Maintenance ₹1399</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Add-On Services</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" value="0" id="addonNone"> None</label>
+          <label><input type="checkbox" value="999" class="addon"> SEO Optimization ₹999</label>
+          <label><input type="checkbox" value="200" class="addon"> Custom Domain Email ₹200</label>
+          <label><input type="checkbox" value="150" class="addon"> Custom Shortlinks ₹150</label>
+          <label><input type="checkbox" value="250" class="addon"> Social Media Setup ₹250</label>
+          <label><input type="checkbox" value="200" class="addon"> Website Publishing ₹200</label>
+        </div>
+      </div>
+      <div class="form-buttons">
+        <button type="button" onclick="prevStep()">Back</button>
+        <button type="button" onclick="generateInvoice()">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <h3>Invoice Preview</h3>
+      <div class="invoice-box" id="invoice"></div>
+      <div class="form-buttons">
+        <button type="button" onclick="prevStep()">Back</button>
+        <button type="submit" class="submit-btn">Send Quote</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<section id="social">
+  <h2>Follow Me</h2>
+  <br>
+  <div class="contact-buttons">
+    <a class="btn outline" href="https://instagram.com/cssiddheesh" target="_blank" aria-label="Follow on Instagram"><img src="Assets/Social_Media_Icons/instagram.svg" alt="Instagram" loading="lazy"></a>
+    <a class="btn outline" href="https://github.com/cssiddheesh" target="_blank" aria-label="Follow on GitHub"><img src="Assets/Social_Media_Icons/001-github.svg" alt="GitHub" loading="lazy"></a>
+    <a class="btn outline" href="https://linkedin.com/in/cssiddheesh" target="_blank" aria-label="Connect on LinkedIn"><img src="Assets/Social_Media_Icons/007-linkedin.svg" alt="LinkedIn" loading="lazy"></a>
+    <a class="btn outline" href="https://facebook.com/cssiddheesh" target="_blank" aria-label="Follow on Facebook"><img src="Assets/Social_Media_Icons/004-facebook.svg" alt="Facebook" loading="lazy"></a>
+    <a class="btn outline" href="https://x.com/cssiddheesh" target="_blank" aria-label="Follow on X"><img src="Assets/Social_Media_Icons/008-twitter.svg" alt="X" loading="lazy"></a>
+    <a class="btn outline" href="https://pinterest.com/cssiddheesh" target="_blank" aria-label="Follow on Pinterest"><img src="Assets/Social_Media_Icons/pintrest.svg" alt="Pinterest" loading="lazy"></a>
+    <a class="btn outline" href="https://threads.net/@cssiddheesh" target="_blank" aria-label="Follow on Threads"><img src="Assets/Social_Media_Icons/005-gmail.svg" alt="Threads" loading="lazy"></a>
+    <a class="btn outline" href="https://linktr.ee/cssiddheesh" target="_blank" aria-label="Visit Linktree"><img src="Assets/Social_Media_Icons/linktree.png" alt="Linktree" loading="lazy"></a>
+    <a class="btn outline" href="https://youtube.com/@cssiddheesh" target="_blank" aria-label="Subscribe on YouTube"><img src="Assets/Social_Media_Icons/009-youtube.svg" alt="YouTube" loading="lazy"></a>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Contact Me</h2>
+  <p>Let's build something great together.</p>
+  <br>
+  <div class="contact-buttons">
+    <a class="email-link" href="mailto:contact@cssiddheesh.in">contact@cssiddheesh.in</a>
+    <br>
+    <a class="btn outline" href="https://ig.me/m/cssiddheesh" target="_blank">Instagram (DM)</a>
+  </div>
+</section>
+
+<script>
+let currentStep = 0;
+const steps = document.querySelectorAll(".step");
+const gstRate = 0.18;
+
+function showStep() {
+  steps.forEach((step, index) => {
+    step.classList.toggle("active", index === currentStep);
+  });
+}
+
+function nextStep() { currentStep++; showStep(); }
+function prevStep() { currentStep--; showStep(); }
+
+const addons = document.querySelectorAll(".addon");
+const addonNone = document.getElementById("addonNone");
+
+addons.forEach(box => {
+  box.addEventListener("change", () => {
+    if (box.checked) addonNone.checked = false;
+  });
+});
+
+addonNone.addEventListener("change", () => {
+  if (addonNone.checked) {
+    addons.forEach(box => box.checked = false);
+  }
+});
+
+function generateInvoice() {
+  let subtotal = 0;
+  let invoiceNumber = "INV-" + Date.now();
+  let today = new Date().toLocaleDateString();
+
+  let website = document.getElementById("website");
+  let maintenance = document.getElementById("maintenance");
+
+  let rows = "";
+
+  if (parseInt(website.value) > 0) {
+    let price = parseInt(website.value);
+    subtotal += price;
+    rows += `<tr><td>${website.options[website.selectedIndex].text}</td><td>₹${price}</td></tr>`;
+  }
+
+  if (parseInt(maintenance.value) > 0) {
+    let price = parseInt(maintenance.value);
+    subtotal += price;
+    rows += `<tr><td>${maintenance.options[maintenance.selectedIndex].text}</td><td>₹${price}</td></tr>`;
+  }
+
+  addons.forEach(box => {
+    if (box.checked) {
+      let price = parseInt(box.value);
+      let name = box.parentElement.textContent.trim();
+      subtotal += price;
+      rows += `<tr><td>${name}</td><td>₹${price}</td></tr>`;
+    }
+  });
+
+  let gst = subtotal * gstRate;
+  let total = subtotal + gst;
+
+  let invoiceHTML = `
+    <div class="invoice-header">
+      <h2>CS Siddheesh</h2>
+      <div class="invoice-meta">
+        <p><strong>Invoice No:</strong> ${invoiceNumber}</p>
+        <p><strong>Date:</strong> ${today}</p>
+      </div>
+    </div>
+    <hr>
+    <h4>Client Details</h4>
+    <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
+    <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
+    <p><strong>Phone:</strong> ${document.getElementById("phone").value}</p>
+    <table>
+      <tr>
+        <th>Service</th>
+        <th>Price</th>
+      </tr>
+      ${rows}
+      <tr>
+        <td><strong>Subtotal</strong></td>
+        <td>₹${subtotal}</td>
+      </tr>
+      <tr>
+        <td><strong>GST (18%)</strong></td>
+        <td>₹${gst.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td><strong>Total</strong></td>
+        <td><strong>₹${total.toFixed(2)}</strong></td>
+      </tr>
+    </table>
+  `;
+
+  document.getElementById("invoice").innerHTML = invoiceHTML;
+  nextStep();
+}
+
+document.getElementById("orderForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const submitBtn = document.querySelector(".submit-btn");
+  submitBtn.innerText = "Sending...";
+  submitBtn.disabled = true;
+
+  try {
+
+    const formData = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      address: document.getElementById("address").value,
+      company: document.getElementById("company").value,
+      invoice: document.getElementById("invoice").innerHTML
+    };
+
+    const response = await fetch("https://orders.cssiddheesh-work.workers.dev", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
+
+    if (response.ok) {
+      alert("Quote Sent Successfully! We will contact you soon.");
+      this.reset();
+      currentStep = 0;
+      showStep();
+      document.getElementById("invoice").innerHTML = "";
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
+
+  } catch (error) {
+    alert("Network Error. Please try again.");
+  }
+
+  submitBtn.innerText = "Send Quote";
+  submitBtn.disabled = false;
+});
+
+// Back to top
+window.addEventListener("scroll", function() {
+  const scrollBar = document.getElementById("scrollBar");
+  const backToTop = document.getElementById("backToTop");
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrolled = (winScroll / height) * 100;
+  scrollBar.style.width = scrolled + "%";
+  
+  if (winScroll > 300) {
+    backToTop.classList.add("show");
+  } else {
+    backToTop.classList.remove("show");
+  }
+});
+
+// Mobile navigation toggle
+document.querySelector(".nav-toggle").addEventListener("click", function() {
+  this.classList.toggle("open");
+  document.getElementById("navLinks").classList.toggle("open");
+});
+</script>
+
+</body>
+</html>
