@@ -367,6 +367,16 @@ let currentStep = 0;
 const steps = document.querySelectorAll(".step");
 const gstRate = 0.18;
 
+// Function to generate invoice ID on the frontend
+function generateFrontendInvoiceID() {
+    const year = new Date().getFullYear();
+    const random = Math.floor(1000 + Math.random() * 9000);
+    return `SID-${year}-${random}`;
+}
+
+// Store the current invoice ID
+let currentInvoiceID = "";
+
 function showStep() {
   steps.forEach((step, index) => {
     step.classList.toggle("active", index === currentStep);
@@ -392,8 +402,9 @@ addonNone.addEventListener("change", () => {
 });
 
 function generateInvoice() {
+  currentInvoiceID = generateFrontendInvoiceID(); // Generate ID once here
+  
   let subtotal = 0;
-  let invoiceNumber = "INV-" + Date.now();
   let today = new Date().toLocaleDateString();
 
   let website = document.getElementById("website");
@@ -429,7 +440,7 @@ function generateInvoice() {
     <div class="invoice-header">
       <h2>CS Siddheesh</h2>
       <div class="invoice-meta">
-        <p><strong>Invoice No:</strong> ${invoiceNumber}</p>
+        <p><strong>Invoice ID:</strong> ${currentInvoiceID}</p>
         <p><strong>Date:</strong> ${today}</p>
       </div>
     </div>
@@ -485,6 +496,7 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
 
   // 3. Build the Payload exactly as the Worker expects it
   const payload = {
+    invoiceNumber: currentInvoiceID,
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
     phone: document.getElementById('phone').value,
