@@ -463,48 +463,57 @@ function generateInvoice() {
   nextStep();
 }
 
-document.getElementById("orderForm").addEventListener("submit", async function(e) {
+document.getElementById('orderForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  const btn = e.target.querySelector('.submit-btn');
+  btn.innerText = "Processing...";
+  btn.disabled = true;
 
-  const submitBtn = document.querySelector(".submit-btn");
-  submitBtn.innerText = "Sending...";
-  submitBtn.disabled = true;
+  // 1. Get Text from Select Dropdowns (instead of just the price value)
+  const planSelect = document.getElementById('website');
+  const planText = planSelect.options[planSelect.selectedIndex].text;
+
+  const mainSelect = document.getElementById('maintenance');
+  const mainText = mainSelect.options[mainSelect.selectedIndex].text;
+
+  // 2. Collect Checkbox Add-ons
+  const selectedAddons = [];
+  document.querySelectorAll('.addon:checked').forEach(cb => {
+    // This grabs the text next to the checkbox (e.g., "SEO Optimization ₹999")
+    selectedAddons.push(cb.parentElement.innerText.trim());
+  });
+
+  // 3. Build the Payload exactly as the Worker expects it
+  const payload = {
+    name: document.getElementById('name').value,
+    email: document.getElementById('email').value,
+    phone: document.getElementById('phone').value,
+    address: document.getElementById('address').value,
+    company: document.getElementById('company').value || "N/A",
+    plan: planText,
+    maintenance: mainText,
+    addons: selectedAddons.length > 0 ? selectedAddons.join(', ') : "None",
+    // Grabs the total from your invoice preview div
+    grandTotal: document.getElementById('invoice').innerText.split('Total: ₹')[1] || "0"
+  };
 
   try {
-
-    const formData = {
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      phone: document.getElementById("phone").value,
-      address: document.getElementById("address").value,
-      company: document.getElementById("company").value,
-      invoice: document.getElementById("invoice").innerHTML
-    };
-
-    const response = await fetch("https://orders.cssiddheesh-work.workers.dev", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
+    const response = await fetch('https://orders.cssiddheesh-work.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
 
     if (response.ok) {
-      alert("Quote Sent Successfully! We will contact you soon.");
-      this.reset();
-      currentStep = 0;
-      showStep();
-      document.getElementById("invoice").innerHTML = "";
-    } else {
-      alert("Something went wrong. Please try again.");
+      alert("Order Sent Successfully!");
+      window.location.reload();
     }
-
   } catch (error) {
-    alert("Network Error. Please try again.");
+    alert("Error connection to server.");
+  } finally {
+    btn.innerText = "Send Quote";
+    btn.disabled = false;
   }
-
-  submitBtn.innerText = "Send Quote";
-  submitBtn.disabled = false;
 });
 
 // Back to top
