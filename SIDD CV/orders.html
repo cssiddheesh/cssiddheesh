@@ -440,7 +440,7 @@ function generateInvoice() {
     <div class="invoice-header">
       <h2>CS Siddheesh</h2>
       <div class="invoice-meta">
-        <p><strong>Invoice ID:</strong> ${currentInvoiceID}</p>
+        <p><strong>Invoice ID:</strong> <span id="displayInvoiceID">${currentInvoiceID}</span></p>
         <p><strong>Date:</strong> ${today}</p>
       </div>
     </div>
@@ -496,17 +496,13 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
 
   // 3. Build the Payload exactly as the Worker expects it
   const payload = {
-    invoiceNumber: currentInvoiceID,
+    invoiceNumber: document.getElementById('displayInvoiceID').innerText,
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
-    phone: document.getElementById('phone').value,
-    address: document.getElementById('address').value,
-    company: document.getElementById('company').value || "N/A",
-    plan: planText,
-    maintenance: mainText,
-    addons: selectedAddons.length > 0 ? selectedAddons.join(', ') : "None",
-    // Grabs the total from your invoice preview div
-    grandTotal: document.getElementById('invoice').innerText.split('Total: ₹')[1] || "0"
+    plan: document.getElementById('website').selectedOptions[0].text,
+    maintenance: document.getElementById('maintenance').selectedOptions[0].text,
+    addons: selectedAddons.join(', '),
+    grandTotal: document.getElementById('finalTotal').innerText.replace(/[^\d]/g, '')
   };
 
   try {
