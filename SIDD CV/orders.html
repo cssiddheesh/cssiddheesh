@@ -365,7 +365,6 @@
 <script>
 let currentStep = 0;
 const steps = document.querySelectorAll(".step");
-const gstRate = 0.18;
 
 // Function to generate invoice ID on the frontend
 function generateFrontendInvoiceID() {
@@ -402,97 +401,81 @@ addonNone.addEventListener("change", () => {
 });
 
 function generateInvoice() {
-    currentInvoiceID = generateFrontendInvoiceID();
-    let subtotal = 0;
-    let today = new Date().toLocaleDateString();
-    let website = document.getElementById("website");
-    let maintenance = document.getElementById("maintenance");
-    let rows = "";
+  currentInvoiceID = generateFrontendInvoiceID();
+  let subtotal = 0;
+  let today = new Date().toLocaleDateString();
+  let website = document.getElementById("website");
+  let maintenance = document.getElementById("maintenance");
+  let rows = "";
 
-    if (parseInt(website.value) > 0) {
-        let price = parseInt(website.value);
-        subtotal += price;
-        rows += `<tr><td>${website.options[website.selectedIndex].text}</td><td>₹${price}</td></tr>`;
-    }
+  if (parseInt(website.value) > 0) {
+    subtotal += parseInt(website.value);
+    rows += `<tr><td>${website.options[website.selectedIndex].text}</td><td>₹${website.value}</td></tr>`;
+  }
 
-    if (parseInt(maintenance.value) > 0) {
-        let price = parseInt(maintenance.value);
-        subtotal += price;
-        rows += `<tr><td>${maintenance.options[maintenance.selectedIndex].text}</td><td>₹${price}</td></tr>`;
-    }
+  if (parseInt(maintenance.value) > 0) {
+    subtotal += parseInt(maintenance.value);
+    rows += `<tr><td>${maintenance.options[maintenance.selectedIndex].text}</td><td>₹${maintenance.value}</td></tr>`;
+  }
 
-    addons.forEach(box => {
-        if (box.checked) {
-            let price = parseInt(box.value);
-            let name = box.parentElement.textContent.trim();
-            subtotal += price;
-            rows += `<tr><td>${name}</td><td>₹${price}</td></tr>`;
-        }
-    });
+  const selectedAddonsText = [];
+  document.querySelectorAll(".addon:checked").forEach(box => {
+    subtotal += parseInt(box.value);
+    const name = box.parentElement.textContent.trim();
+    selectedAddonsText.push(name);
+    rows += `<tr><td>${name}</td><td>₹${box.value}</td></tr>`;
+  });
 
-    let gst = subtotal * gstRate;
-    let total = subtotal + gst;
+  let gst = subtotal * 0.18;
+  let total = subtotal + gst;
 
-    // FIX: Added id="finalTotal" to the Total <td> so the submit script can find it
-    let invoiceHTML = `
-        <div class="invoice-header">
-            <h2>CS Siddheesh</h2>
-            <div class="invoice-meta">
-                <p><strong>Invoice ID:</strong> <span id="displayInvoiceID">${currentInvoiceID}</span></p>
-                <p><strong>Date:</strong> ${today}</p>
-            </div>
-        </div>
-        <hr>
-        <h4>Client Details</h4>
-        <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
-        <table>
-            <tr><th>Service</th><th>Price</th></tr>
-            ${rows}
-            <tr><td>Subtotal</td><td>₹${subtotal}</td></tr>
-            <tr><td>GST (18%)</td><td>₹${gst.toFixed(2)}</td></tr>
-            <tr><td><strong>Total</strong></td><td><strong id="finalTotal">₹${total.toFixed(2)}</strong></td></tr>
-        </table>
-    `;
+  // CRITICAL FIX: Added id="finalTotal" and id="displayInvoiceID"
+  let invoiceHTML = `
+    <div class="invoice-header">
+      <h2>CS Siddheesh</h2>
+      <div class="invoice-meta">
+        <p><strong>Invoice ID:</strong> <span id="displayInvoiceID">${currentInvoiceID}</span></p>
+        <p><strong>Date:</strong> ${today}</p>
+      </div>
+    </div>
+    <hr>
+    <table>
+      <tr><th>Service</th><th>Price</th></tr>
+      ${rows}
+      <tr><td>Subtotal</td><td>₹${subtotal}</td></tr>
+      <tr><td>GST (18%)</td><td>₹${gst.toFixed(2)}</td></tr>
+      <tr><td><strong>Total</strong></td><td><strong id="finalTotal">₹${total.toFixed(2)}</strong></td></tr>
+    </table>
+  `;
 
-    document.getElementById("invoice").innerHTML = invoiceHTML;
-    nextStep();
+  document.getElementById("invoice").innerHTML = invoiceHTML;
+  nextStep();
 }
 
+// Fixed Submit Listener
 document.getElementById('orderForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = e.target.querySelector('.submit-btn');
   btn.innerText = "Processing...";
   btn.disabled = true;
 
-  // 1. Get Text from Select Dropdowns (instead of just the price value)
-  const planSelect = document.getElementById('website');
-  const planText = planSelect.options[planSelect.selectedIndex].text;
-
-  const mainSelect = document.getElementById('maintenance');
-  const mainText = mainSelect.options[mainSelect.selectedIndex].text;
-
-  // 2. Collect Checkbox Add-ons
-  const selectedAddons = [];
-  document.querySelectorAll('.addon:checked').forEach(cb => {
-    // This grabs the text next to the checkbox (e.g., "SEO Optimization ₹999")
-    selectedAddons.push(cb.parentElement.innerText.trim());
-  });
-
-  // 3. Build the Payload exactly as the Worker expects it
-  const payload = {
-    invoiceNumber: document.getElementById('displayInvoiceID').innerText,
-    name: document.getElementById('name').value,
-    email: document.getElementById('email').value,
-    phone: document.getElementById('phone').value,
-    company: document.getElementById('company').value || "N/A",
-    plan: document.getElementById('website').options[document.getElementById('website').selectedIndex].text,
-    maintenance: document.getElementById('maintenance').options[document.getElementById('maintenance').selectedIndex].text,
-    addons: selectedAddons.length > 0 ? selectedAddons.join(', ') : "None",
-    // This line now works because id="finalTotal" exists!
-    grandTotal: document.getElementById('finalTotal').innerText.replace(/[^\d.]/g, '')
-  };
-
   try {
+    // Safely grab values
+    const finalTotalElement = document.getElementById('finalTotal');
+    const invoiceIDElement = document.getElementById('displayInvoiceID');
+
+    const payload = {
+      invoiceNumber: invoiceIDElement ? invoiceIDElement.innerText : "SID-ERROR",
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      company: document.getElementById('company').value || "N/A",
+      plan: document.getElementById('website').selectedOptions[0].text,
+      maintenance: document.getElementById('maintenance').selectedOptions[0].text,
+      addons: Array.from(document.querySelectorAll('.addon:checked')).map(cb => cb.parentElement.innerText.trim()).join(', ') || "None",
+      grandTotal: finalTotalElement ? finalTotalElement.innerText.replace(/[^\d.]/g, '') : "0"
+    };
+
     const response = await fetch('https://orders.cssiddheesh-work.workers.dev', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -502,9 +485,12 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
     if (response.ok) {
       alert("Order Sent Successfully!");
       window.location.reload();
+    } else {
+      throw new Error("Worker Error");
     }
   } catch (error) {
-    alert("Error connection to server.");
+    console.error(error);
+    alert("Connection Error. Please check console.");
   } finally {
     btn.innerText = "Send Quote";
     btn.disabled = false;
