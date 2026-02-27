@@ -233,10 +233,10 @@
     }
   </style>
 </head>
-<body id="pricing-top">
+<body id="orders-top">
 
 <div class="scroll-bar" id="scrollBar"></div>
-<a href="#pricing-top" id="backToTop" class="back-to-top">↑</a>
+<a href="#order-top" id="backToTop" class="back-to-top">↑</a>
 
 <nav>
   <a href="index.html" class="site-logo" aria-label="Go to home">CS Siddheesh</a>
@@ -402,76 +402,60 @@ addonNone.addEventListener("change", () => {
 });
 
 function generateInvoice() {
-  currentInvoiceID = generateFrontendInvoiceID(); // Generate ID once here
-  
-  let subtotal = 0;
-  let today = new Date().toLocaleDateString();
+    currentInvoiceID = generateFrontendInvoiceID();
+    let subtotal = 0;
+    let today = new Date().toLocaleDateString();
+    let website = document.getElementById("website");
+    let maintenance = document.getElementById("maintenance");
+    let rows = "";
 
-  let website = document.getElementById("website");
-  let maintenance = document.getElementById("maintenance");
-
-  let rows = "";
-
-  if (parseInt(website.value) > 0) {
-    let price = parseInt(website.value);
-    subtotal += price;
-    rows += `<tr><td>${website.options[website.selectedIndex].text}</td><td>₹${price}</td></tr>`;
-  }
-
-  if (parseInt(maintenance.value) > 0) {
-    let price = parseInt(maintenance.value);
-    subtotal += price;
-    rows += `<tr><td>${maintenance.options[maintenance.selectedIndex].text}</td><td>₹${price}</td></tr>`;
-  }
-
-  addons.forEach(box => {
-    if (box.checked) {
-      let price = parseInt(box.value);
-      let name = box.parentElement.textContent.trim();
-      subtotal += price;
-      rows += `<tr><td>${name}</td><td>₹${price}</td></tr>`;
+    if (parseInt(website.value) > 0) {
+        let price = parseInt(website.value);
+        subtotal += price;
+        rows += `<tr><td>${website.options[website.selectedIndex].text}</td><td>₹${price}</td></tr>`;
     }
-  });
 
-  let gst = subtotal * gstRate;
-  let total = subtotal + gst;
+    if (parseInt(maintenance.value) > 0) {
+        let price = parseInt(maintenance.value);
+        subtotal += price;
+        rows += `<tr><td>${maintenance.options[maintenance.selectedIndex].text}</td><td>₹${price}</td></tr>`;
+    }
 
-  let invoiceHTML = `
-    <div class="invoice-header">
-      <h2>CS Siddheesh</h2>
-      <div class="invoice-meta">
-        <p><strong>Invoice ID:</strong> <span id="displayInvoiceID">${currentInvoiceID}</span></p>
-        <p><strong>Date:</strong> ${today}</p>
-      </div>
-    </div>
-    <hr>
-    <h4>Client Details</h4>
-    <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
-    <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
-    <p><strong>Phone:</strong> ${document.getElementById("phone").value}</p>
-    <table>
-      <tr>
-        <th>Service</th>
-        <th>Price</th>
-      </tr>
-      ${rows}
-      <tr>
-        <td><strong>Subtotal</strong></td>
-        <td>₹${subtotal}</td>
-      </tr>
-      <tr>
-        <td><strong>GST (18%)</strong></td>
-        <td>₹${gst.toFixed(2)}</td>
-      </tr>
-      <tr>
-        <td><strong>Total</strong></td>
-        <td><strong>₹${total.toFixed(2)}</strong></td>
-      </tr>
-    </table>
-  `;
+    addons.forEach(box => {
+        if (box.checked) {
+            let price = parseInt(box.value);
+            let name = box.parentElement.textContent.trim();
+            subtotal += price;
+            rows += `<tr><td>${name}</td><td>₹${price}</td></tr>`;
+        }
+    });
 
-  document.getElementById("invoice").innerHTML = invoiceHTML;
-  nextStep();
+    let gst = subtotal * gstRate;
+    let total = subtotal + gst;
+
+    // FIX: Added id="finalTotal" to the Total <td> so the submit script can find it
+    let invoiceHTML = `
+        <div class="invoice-header">
+            <h2>CS Siddheesh</h2>
+            <div class="invoice-meta">
+                <p><strong>Invoice ID:</strong> <span id="displayInvoiceID">${currentInvoiceID}</span></p>
+                <p><strong>Date:</strong> ${today}</p>
+            </div>
+        </div>
+        <hr>
+        <h4>Client Details</h4>
+        <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
+        <table>
+            <tr><th>Service</th><th>Price</th></tr>
+            ${rows}
+            <tr><td>Subtotal</td><td>₹${subtotal}</td></tr>
+            <tr><td>GST (18%)</td><td>₹${gst.toFixed(2)}</td></tr>
+            <tr><td><strong>Total</strong></td><td><strong id="finalTotal">₹${total.toFixed(2)}</strong></td></tr>
+        </table>
+    `;
+
+    document.getElementById("invoice").innerHTML = invoiceHTML;
+    nextStep();
 }
 
 document.getElementById('orderForm').addEventListener('submit', async (e) => {
@@ -499,10 +483,13 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
     invoiceNumber: document.getElementById('displayInvoiceID').innerText,
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
-    plan: document.getElementById('website').selectedOptions[0].text,
-    maintenance: document.getElementById('maintenance').selectedOptions[0].text,
-    addons: selectedAddons.join(', '),
-    grandTotal: document.getElementById('finalTotal').innerText.replace(/[^\d]/g, '')
+    phone: document.getElementById('phone').value,
+    company: document.getElementById('company').value || "N/A",
+    plan: document.getElementById('website').options[document.getElementById('website').selectedIndex].text,
+    maintenance: document.getElementById('maintenance').options[document.getElementById('maintenance').selectedIndex].text,
+    addons: selectedAddons.length > 0 ? selectedAddons.join(', ') : "None",
+    // This line now works because id="finalTotal" exists!
+    grandTotal: document.getElementById('finalTotal').innerText.replace(/[^\d.]/g, '')
   };
 
   try {
