@@ -1,0 +1,124 @@
+export default {
+  async fetch(request, env) {
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
+    }
+
+    if (request.method === "POST") {
+      try {
+        const body = await request.json();
+        const { name, email, message } = body;
+        const greetingName = name ? name.trim() : "there";
+
+        if (!email || !message) {
+          return new Response("Missing required fields", { status: 400, headers: corsHeaders });
+        }
+
+        // 1. Admin Notification (To you)
+        const adminEmailReq = fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Forms | cssiddheesh.in <forms@cssiddheesh.in>",
+            to: ["forms@cssiddheesh.in"],
+            reply_to: email,
+            subject: `New Project Inquiry: ${name}`,
+            text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+          }),
+        });
+
+        // 2. HTML Auto-Reply (The Branded Template you wanted)
+        const autoReplyReq = fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "Forms | cssiddheesh.in <forms@cssiddheesh.in>",
+            to: [email],
+            subject: "I've received your enquiry - cssiddheesh.in",
+            html: `
+              <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; color: #ffffff;">
+                
+                <div style="padding: 25px 30px; border-bottom: 1px solid #1a1a1a; background-color: #000000;">
+                  <h2 style="margin: 0; font-size: 20px; color: #ff6b00; font-weight: bold;">cssiddheesh<span style="color: #ffffff;">.in</span></h2>
+                </div>
+                
+                <div style="padding: 40px 30px; line-height: 1.6;">
+                  <p style="font-size: 18px; color: #ffffff; margin-bottom: 20px;">Hi <strong>${greetingName}</strong>,</p>
+                  
+                  <p style="color: #ffffff; margin-bottom: 10px;">Thank you for reaching out through my website. I’ve successfully received your enquiry and will review it shortly.</p>
+                  
+                  <p style="color: #a3a3a3; font-size: 14px; font-style: italic; margin-bottom: 25px;">This is an automated confirmation email, so no action is required from you at this time.</p>
+
+                  <p style="color: #ffffff; margin-bottom: 5px;">I typically respond within <strong>24–48 business hours</strong>.</p>
+                  <p style="color: #ffffff; margin-bottom: 30px;">If your enquiry is time-sensitive, simply reply to this email and I’ll prioritise your request.</p>
+                  
+
+
+                  <p style="color: #d1d1d1;">While you wait, you can explore my recent work by visiting my <a href="https://cssiddheesh.in" style="color: #ff6b00; text-decoration: none; font-weight: bold;">portfolio</a>.</p>
+
+                  <div style="margin-top: 40px;">
+                    <p style="margin-bottom: 0; color: #ffffff;">Best regards,</p>
+                    <p style="margin-top: 5px; margin-bottom: 0; font-size: 18px; font-weight: bold; color: #ff6b00;">CS Siddheesh</p>
+                    <p style="margin-top: 2px; color: #a3a3a3; font-size: 14px;">Freelance Web Developer</p>
+                  </div>
+                </div>
+
+                <div style="background-color: #000000; padding: 30px; border-top: 1px solid #1a1a1a; text-align: center;">
+                  <p style="margin: 0 0 10px 0; color: #ffffff; font-size: 13px;">
+                    <a href="mailto:contact@cssiddheesh.in" style="color: #ffffff; text-decoration: none;">contact@cssiddheesh.in</a> | 
+                    <a href="https://cssiddheesh.in" style="color: #ffffff; text-decoration: none;">https://cssiddheesh.in</a>
+                  </p>
+                   <div style="margin-top: 15px;">
+                      <a href="https://github.com/cssiddheesh" style="color: #666; text-decoration: none; font-size: 12px; margin: 0 10px;">GitHub</a>
+                      <a href="https://youtube.com/@cssiddheesh" style="color: #666; text-decoration: none; font-size: 12px; margin: 0 10px;">YouTube</a>
+                      <a href="https://instagram.com/cssiddheesh" style="color: #666; text-decoration: none; font-size: 12px; margin: 0 10px;">Instagram</a>
+                   </div>
+                </div>
+              </div>
+            `,
+          }),
+        });
+
+        // 3. Google Sheet Bridge (The part that worked)
+        const googleScriptUrl = "https://script.google.com/macros/s/AKfycbxY7Obr7bhHlLCGKM4D3hHq26DVCoF1MX1QYIrl5ifGJHwwPziKRi7fLwqZyqSsaXNY/exec";
+
+        const googleSheetReq = fetch(googleScriptUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+          },
+          body: JSON.stringify({ name, email, message }),
+        });
+
+        // Use Promise.allSettled so one failure doesn't stop the others
+        await Promise.allSettled([adminEmailReq, autoReplyReq, googleSheetReq]);
+
+        return new Response(JSON.stringify({ success: true }), { 
+          status: 200, 
+          headers: corsHeaders 
+        });
+
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), { 
+          status: 500, 
+          headers: corsHeaders 
+        });
+      }
+    }
+
+    return new Response("Method Not Allowed", { status: 405 });
+  },
+};

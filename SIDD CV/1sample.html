@@ -1,0 +1,146 @@
+export default {
+  async fetch(request, env) {
+    const allowedOrigins = ["https://cssiddheesh.in", "https://www.cssiddheesh.in"];
+    const origin = request.headers.get("Origin");
+    
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": allowedOrigins.includes(origin) ? origin : allowedOrigins[0],
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
+    if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+    try {
+      const data = await request.json();
+      const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+      // 1. Log to Google Sheets
+      const sheetReq = fetch(env.GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(data)
+      });
+
+      // 2. Client HTML Email (Branded)
+      const clientEmailReq = fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from: "Orders | cssiddheesh.in<orders@cssiddheesh.in>",
+          to: [data.email],
+          subject: `Enquiry Received: ${data.invoiceNumber}`,
+          html: generateClientHTML(data, timestamp)
+        })
+      });
+
+      // 3. Admin Plain Text Email (For You)
+      const adminEmailReq = fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from: "Orders | cssiddheesh.in<orders@cssiddheesh.in>",
+          to: ["orders@cssiddheesh.in"],
+          subject: `NEW ORDER: ${data.invoiceNumber} - ${data.name}`,
+          text: `
+New Order Received!
+----------------------------
+Invoice ID: ${data.invoiceNumber}
+Date: ${timestamp}
+
+Client Details:
+- Name: ${data.name}
+- Email: ${data.email}
+- Phone: ${data.phone}
+- Company: ${data.company || "N/A"}
+
+Order Summary:
+- Plan: ${data.plan}
+- Maintenance: ${data.maintenance}
+- Add-ons: ${data.addons}
+- Grand Total: ₹${data.grandTotal}
+----------------------------
+Check Google Sheets for details.
+https://links.cssiddheesh.in/orders-gsheet-link
+          `
+        })
+      });
+
+      // Execute all requests
+      await Promise.all([sheetReq, clientEmailReq, adminEmailReq]);
+
+      return new Response(JSON.stringify({ success: true }), { status: 200, headers: corsHeaders });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: corsHeaders });
+    }
+  }
+};
+
+/**
+ * High-end Dark Theme Template for Clients
+ */
+function generateClientHTML(data, time) {
+  const orange = "#ff7a18";
+  return `
+    <div style="background-color: #0b0b0b; color: #ffffff; font-family: 'Poppins', Arial, sans-serif; padding: 40px 20px; max-width: 600px; margin: auto; border: 1px solid #222; border-radius: 15px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        
+                       <div style="padding: 25px 30px; border-bottom: 1px solid #1a1a1a; background-color: #000000;">
+                  <h2 style="margin: 0; font-size: 20px; color: #ff6b00; font-weight: bold;">cssiddheesh<span style="color: #ffffff;">.in</span></h2>
+                </div>  
+             
+        <p style="color: #b5b5b5; font-size: 12px;">INVOICE ID: ${data.invoiceNumber}</p>
+      </div>
+      
+      <div style="padding: 20px; border-top: 2px solid ${orange}; background: #111; border-radius: 8px;">
+        <p style="font-size: 16px;">Hi <strong>${data.name}</strong>,</p>
+        <p style="color: #ffffff; line-height: 1.6;">Your enquiry has been received successfully. The requirements will be reviewed and you will be contacted shortly.</p>
+        
+        <table style="width: 100%; color: #fff; margin-top: 20px; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 10px 0; color: #b5b5b5;">Selected Plan:</td>
+            <td style="padding: 10px 0; text-align: right;">${data.plan}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 0; color: #b5b5b5;">Maintenance:</td>
+            <td style="padding: 10px 0; text-align: right;">${data.maintenance}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 0; color: #b5b5b5;">Add-ons:</td>
+            <td style="padding: 10px 0; text-align: right;">${data.addons}</td>
+          </tr>
+          <tr>
+            <td style="padding: 20px 0 0 0; font-size: 20px; font-weight: bold; color: ${orange};">Grand Total:</td>
+            <td style="padding: 20px 0 0 0; font-size: 20px; font-weight: bold; text-align: right; color: ${orange};">₹${data.grandTotal}</td>
+          </tr>
+        </table>
+      </div>
+       <p style="color: #a3a3a3; font-size: 14px; font-style: italic; margin-bottom: 25px;">This is an automated confirmation email, so no action is required from you at this time.</p>
+        <p style="color: #ffffff; margin-bottom: 5px;">I typically respond within <strong>24–48 business hours</strong>.</p>
+                  <p style="color: #ffffff; margin-bottom: 30px;">If your enquiry is time-sensitive, simply reply to this email and I’ll prioritise your request.</p>
+                  
+                  <div style="margin: 30px 0; padding: 25px; border: 1px solid #333; border-left: 4px solid #ff6b00; background-color: #111; border-radius: 8px;">
+                    <h3 style="margin-top: 0; color: #ff6b00; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">What happens next?</h3>
+                    <ul style="padding-left: 20px; color: #d1d1d1; margin-bottom: 0;">
+                      <li style="margin-bottom: 8px;">I’ll personally review your project requirements.</li>
+                      <li style="margin-bottom: 8px;">I may reach out for additional details if needed.</li>
+                      <li>You’ll receive a follow-up email with recommended next steps or a tailored project quote.</li>
+                    </ul>
+                  </div>
+
+
+      <div style="margin-top: 30px; text-align: center; color: #b5b5b5; font-size: 13px;">
+        <p>Ordered on ${time}</p>
+        <p style="margin-top: 10px;">If you have any questions, reply to this email or contact me at <a href="mailto:contact@cssiddheesh.in" style="color: ${orange}; text-decoration: none;">contact@cssiddheesh.in</a></p>
+      </div>
+      
+    </div>
+    
+  `;
+}
