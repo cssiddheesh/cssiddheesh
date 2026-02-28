@@ -255,8 +255,44 @@
 
 <!-- ===== ORDER FORM ===== -->
 <div class="form-container">
-  <h2>ORDER FORM</h2>
+<style>
+  h2.custom-header {
+    /* Layout & Centering */
+    text-align: center;
+    margin: 20px auto;
+    display: block;
+    position: relative;
+    width: fit-content; /* Keeps the line exactly the length of the text */
+    
+    /* Typography */
+    color: #ff7a18; /* Your specific orange */
+    font-family: sans-serif;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+  }
 
+  /* The Moving White Underline */
+  h2.custom-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background: white;
+    transform-origin: left;
+    animation: slide-line 2.5s infinite ease-in-out;
+  }
+
+  @keyframes slide-line {
+    0% { transform: scaleX(0); transform-origin: left; }
+    50% { transform: scaleX(1); transform-origin: left; }
+    50.1% { transform: scaleX(1); transform-origin: right; }
+    100% { transform: scaleX(0); transform-origin: right; }
+  }
+</style>
+
+<h2 class="custom-header">BUILD YOUR SITE</h2>
   <form id="orderForm">
     <!-- STEP 1 -->
     <div class="step active">
